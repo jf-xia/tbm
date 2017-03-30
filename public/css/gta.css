@@ -1,0 +1,132 @@
+
+/* widget style */
+
+.widget {
+    background-color: whitesmoke;
+    border-right: 14px solid #FFF;
+    border-bottom: 2px solid #FFF;
+    border-top: 2px solid #FFF;
+}
+
+.widget h4 {
+    background-color: #eee;
+    border: 2px solid #eee;
+}
+
+.widget .elabel{
+    white-space: nowrap;
+}
+
+.widget .wlabel{
+    float: left;
+    width: 60px;
+    overflow: hidden;
+    clear: left;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.widget .wlabel:hover{
+    overflow: inherit;
+    white-space: normal;
+}
+
+.widget .wvalue{
+    margin-left: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.widget .wvalue:hover{
+    overflow: inherit;
+    white-space: normal;
+}
+
+.workflow-info {
+    width: 100%;
+}
+
+.workflow-info:hover {
+    width: 1200px;
+    position: fixed;
+    bottom: 1px;
+}
+
+.dbsearch {
+    width: 90px;
+}
+
+td.details-control {
+    background: url('/images/details_open.png') no-repeat center center;
+    cursor: pointer;
+    width: 5% !important;
+    color: white;
+    font-size: 0px;
+}
+tr.shown td.details-control {
+    background: url('/images/details_close.png') no-repeat center center;
+    color: white;
+}
+
+ /*calendar css*/
+[data-time] {
+
+}
+.event-tooltip {
+    position: absolute;
+    filter:alpha(opacity=70);
+    -moz-opacity:0.7;
+    -khtml-opacity: 0.7;
+    opacity: 0.7;
+    background: #000;
+    padding: 2px 3px;
+    z-index: 10001;
+    margin: 1px;
+    right: 0;
+    font-size: 11px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.event-tooltip a{
+    color:#FFF;
+}
+#new-event { margin: 5px 0 5px 0;}
+#color-chooser li span {
+    display: none;
+}
+#color-chooser li:hover span {
+    display: block;
+    position:absolute;
+    background: #000000;
+    color: #FFF;
+    padding: 5px;
+    z-index: 10001;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+}
+.external-event .event-list a{
+    background: black;
+    color: #FFF;
+    padding: 5px;
+    z-index: 10001;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.external-event .event-list {
+    display: none;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+.external-event:hover .event-list {
+    display: block;
+}

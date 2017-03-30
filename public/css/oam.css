@@ -1,0 +1,23 @@
+.pcenter {
+    text-align: center;
+}
+.pcol {
+    word-break:break-all;
+    width: 15%;
+}
+.pcol-7 {
+    word-break:break-all;
+    width: 70%;
+}
+.ptop {
+    margin-top: 10px;
+}
+.pbottom {
+    margin-bottom: 10px;
+}
+.pauto {
+    position:absolute;
+}
+.pdispaly {
+    display: none;
+}

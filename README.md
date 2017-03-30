@@ -1,9 +1,9 @@
 # 业务协作管理系统 (协作/任务/时间) - Team/Tasks/Time Bussniss Management System #
 
-##背景##
+## 背景 ##
 2015年在公司做运维经理的时候，为了方便管理公司的自研产品信息和相关运维客服售后等业务，做了一个简单的web工具系统用于管理产品和业务工单，后来根据业务需要又加入了项目过程的跟进管理，那时发现公司研发和事业部也希望使用或对接，但系统本身对权限和业务变化的支持能力较弱，所以自2016年11月开始我在业余时间开发了这个系统，使用了Laravel框架（边学边做的，也导致了很多不规范的写法），并通过应用开源社区的各种组件和EAV数据结构的自定义业务单据来适应业务的不断变化。Demo地址: [demo.todo4team.net](http://demo.todo4team.net "demo.todo4team.net") 
 
-##概况##
+## 概况 ##
 * 框架：Laravel 5.3 with repositories、laravelcollective/html
 * CRUD：infyomlabs/laravel-generator
 * 前端：Adminlte、Bootstrap、yajra/laravel-datatables、laravel-u-editor、iCalendar、Select2、fx3costa/laravelchartjs等
@@ -13,7 +13,7 @@
 * 微信对接：overtrue/laravel-wechat
 * Redis缓存：predis/predis
 
-##功能（ToDo List）##
+## 功能（ToDo List） ##
 - [x] 任务管理及EAV数据结构
 - [x] 通知功能，邮件提醒，产品、项目关联
 - [x] 任务状态、类型自定义、任务类型字段自定义
@@ -29,7 +29,7 @@
 - [ ] 部分前端、功能模块和语言包改进
 - [ ] 整个系统的需求、功能、数据结构、设计、模型等重新梳理规范，用于规划2.0重构系统
 
-## CRUD的相关脚本##
+## CRUD的相关脚本 ##
 
 ```shell
 

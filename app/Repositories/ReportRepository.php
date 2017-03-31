@@ -165,6 +165,7 @@ class ReportRepository extends BaseRepository
         $subSql = "select b.id,b.name,a.id as taskid,a.title,date_format(a.created_at,'%Y.%m') as create_time,date_format(a.end_at,'%Y.%m') as end_time,a.taskstatus_id from tasks a ,tasktypes b where a.tasktype_id=b.id and b.deleted_at is null and a.deleted_at is null and b.id in (".implode(',',array_keys($tasktyleList)).")";
 
         $sql = "select * from (select concat(name,'-全部') as tasktype_id,".$this->getMonthSql('create_time')." from (".$subSql." ) abc GROUP BY id UNION ALL  select concat(name,'-计划完成') as tasktype_id,".$this->getMonthSql('end_time')." from (".$subSql." ) abc GROUP BY id UNION ALL  select concat(name,'-已完成') as tasktype_id, ".$this->getMonthSql('create_time')." from (".$subSql." and a.taskstatus_id=5  ) abc GROUP BY id ) as qun ORDER BY tasktype_id asc";
+//        dd($sql);
         $monthAnalyicData = \DB::select($sql);
 //        $taskReport['table'] = $this->toTable($monthAnalyicData);
         return $this->toTable($monthAnalyicData);
@@ -174,9 +175,10 @@ class ReportRepository extends BaseRepository
     {
         $sql='';
         for($i=1;$i>-13;$i--) {
-            $month = Carbon::now()->addMonths($i);
+            $month = Carbon::now()->addMonthsNoOverflow($i);
             $sql.= " sum(case ".$timeAt." when '".$month->format('Y.m')."' then 1 else 0 end) '".$month->format('y.m')."' ";
             if ($i<>-12) $sql.=', ';
+//            var_dump($i.$month.'--'.$sql.'<br><br>');
         }
         return ($sql);
     }

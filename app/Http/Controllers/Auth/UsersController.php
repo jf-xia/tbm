@@ -44,7 +44,7 @@ class UsersController extends Controller {
 ////            $users=$users->findWhere([['email','like','%'.$email.'%']]);
 //            $users=$users->where('email','like','%'.$email.'%');
 //        }
-        $users=$users->paginate(10);
+        $users=$users->paginate(10,['*'],\Auth::id());
 
         return view('users.index', compact('users','email'));
     }

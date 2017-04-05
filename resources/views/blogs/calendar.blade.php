@@ -59,7 +59,7 @@
                         user_id: $('#user_id').val(),
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
-                        alert(errorThrown);
+//                        alert(errorThrown);
                     },
                     success: function(doc) {
                         var events = [];

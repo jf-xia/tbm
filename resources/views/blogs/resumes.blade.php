@@ -121,9 +121,9 @@
         </div>
     </div>
     <hr />
-    @if(Auth::check())
+    {{--@if(Auth::check())--}}
         @include('blogs.calendar')
-    @endif
+    {{--@endif--}}
 @endsection
 
 @section('scripts')

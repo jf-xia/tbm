@@ -1,9 +1,10 @@
 # 业务协作管理系统 (协作/任务/时间) - Team/Tasks/Time Bussniss Management System #
 
 ## 背景 ##
-2015年在公司做运维经理的时候，为了方便管理公司的自研产品信息和相关运维客服售后等业务，做了一个简单的web工具系统用于管理产品和业务工单，后来根据业务需要又加入了项目过程的跟进管理，那时发现公司研发和事业部也希望使用或对接，但系统本身对权限和业务变化的支持能力较弱，所以自2016年11月开始我在业余时间开发了这个系统，使用了Laravel框架（边学边做的，也导致了很多不规范的写法），并通过应用开源社区的各种组件和EAV数据结构的自定义业务单据来适应业务的不断变化。Demo地址: [demo.todo4team.net](http://demo.todo4team.net/login "demo.todo4team.net")  [user/passwd: test@tbm.com/123456]
+2015年在公司做运维经理的时候，为了方便管理公司的自研产品信息和相关运维客服售后等业务，做了一个简单的web工具系统用于管理产品和业务工单，后来根据业务需要又加入了项目过程的跟进管理，那时发现公司研发和事业部也希望使用或对接，但系统本身对权限和业务变化的支持能力较弱，所以自2016年11月开始我在业余时间开发了这个系统，使用了Laravel框架（边学边做的，也导致了很多不规范的写法），并通过应用开源社区的各种组件和EAV数据结构的自定义业务单据来适应业务的不断变化。[Demo前台](http://demo.todo4team.net "demo.todo4team.net") | [Demo后台](http://demo.todo4team.net/login "demo.todo4team.net/login")  [user/passwd: test@tbm.com/123456]
 
 ## 概况 ##
+* 管理逻辑: 人人都是管理者(用户组)->目标管理&资产增益(资产库)->时间管理&任务流程化(日程/清单/业务流程化)
 * 管理理论应用：人生目标、五万米里程碑、时间管理、日程管理、待办清单管理、习惯管理、培训分享、BPM管理思想（记录业务步骤、按步骤去做）
 * 框架：Laravel 5.3 with repositories、laravelcollective/html
 * CRUD：infyomlabs/laravel-generator

@@ -5,9 +5,19 @@ namespace App\Repositories;
 use App\Models\Task;
 use App\Models\Task_tag;
 use App\Repositories\BaseRepository;
+use Prettus\Repository\Contracts\CacheableInterface;
+use Prettus\Repository\Traits\CacheableRepository;
 
-class TaskRepository extends BaseRepository
+class TaskRepository extends BaseRepository //implements CacheableInterface
 {
+//    protected $cacheMinutes = 90;
+//
+//    protected $cacheOnly = ['find','paginate'];
+////    //or   all, paginate, find, findByField, findWhere, getByCriteria
+////    protected $cacheExcept = ['find'];
+//
+//    use CacheableRepository;
+
     /**
      * @var array
      */

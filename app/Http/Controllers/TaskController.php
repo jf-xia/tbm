@@ -57,12 +57,12 @@ class TaskController extends AppBaseController
     {
 //        $upload = Excel::load('public/uploads/import/tasks/9_2017-03-07-163627.xlsx');
         \DB::enableQueryLog();
-
-        $type = $this->tasktypeRepository->all();
-//        $taskStatus = $this->tasktypeRepository->getUserTaskTypeList();
-//        $tagRepo = $this->tagRepository->findWhere([['topic','like','%my%']],['id','topic as text'])->toJson();
+dd(\Auth::getSession()->getId(), \DB::getQueryLog());
+        $test = $this->taskRepository->findWithoutFail($id);
+//        $test = $this->tasktypeRepository->getUserTaskTypeList();
+//        $test = $this->taskstatusRepository->findWhere(['user_id'=>0]);
 //        $tags = \DB::select('select id, topic as text from tags WHERE topic LIKE :tagname', ['tagname'=>'%my%']);
-        dd($type->first()->user, \DB::getQueryLog());
+        dd($test->toArray(), \DB::getQueryLog());
 
     }
 
@@ -412,102 +412,6 @@ class TaskController extends AppBaseController
     }
 
     /**
-     * @return \Illuminate\View\ajax
-     */
-    public function productajax(Request $request)
-    {
-        $input = $request->all();
-        $term='%'.$input['term'].'%';//, concat(start_at,plan_at,finish_at) as descr
-        $userlist = \DB::select("select id,concat(prod_name,' ',prod_version,' (',prod_sku,')') as text,concat('产品经理:',prod_manager,'; 测试经理:',test_manager,'; 开发经理:',proj_manager,'; 运维经理:',if((SELECT COUNT(*) from users WHERE id=yw_person)=0,'未分配',(SELECT name from users WHERE id=yw_person))) AS descr
- from p_product_info where prod_sku LIKE :prod_sku or `prod_name` LIKE :prod_name ORDER BY id DESC LIMIT 20", ['prod_sku'=>$term,'prod_name'=>$term]);
-        return \Response::json($userlist);
-    }
-
-    public function calendar()
-    {
-        $myTeams = \Auth::user()->getTeams(\Auth::id(),[\Auth::id()=>\Auth::user()->name]);
-        $tasktype = $this->tasktypeRepository->getUserTaskTypeList();
-        $planToTasks = \DB::select($this->getTasksSql().' WHERE (hours = 0 or taskstatus_id <> 5) and deleted_at is NULL and user_id=:user_id order by end_at ASC',
-            ['user_id'=>\Auth::id()]);
-//        dd($tasks);
-        return view('tasks.calendar',compact('myTeams','tasktype','planToTasks'));
-    }
-
-    public function createAjax(Request $request)
-    {
-        $input = $request->all();
-        if (!isset($input['title'])){
-            return 'Title cannot be empty!';
-        }
-        $user = \Auth::user();
-        $input['user_id']=$user->id;
-        $input['taskstatus_id']=1;
-        $task = $this->taskRepository->create($input);
-        if ($user->leader) {
-            $this->taskgroupRepository->create(['task_id'=>$task->id,'user_id'=>$user->leader]);
-        }
-
-        return $task->id;
-    }
-
-    public function updateAjax(Request $request)
-    {
-        $input = $request->all();
-        $task = $this->taskRepository->findWithoutFail($input['id']);
-        if (empty($task) || $task->user_id<>\Auth::id()) {
-            return 'Task not found';
-        }
-        $task = $this->taskRepository->update($input,$input['id']);
-
-        return 'OK';
-    }
-
-    public function share($id)
-    {
-        $task = $this->taskRepository->findWithoutFail($id);
-        if (empty($task) || $task->user_id<>\Auth::id()) {
-            Flash::error('Task not found');
-            return redirect(route('tasks.index'));
-        }
-        $price = $task->price ? 0 : 1;
-
-        \DB::update('update tasks set price='.$price.' where id='.$id);
-
-        Flash::success('Task updated successfully.');
-
-        return redirect(route('tasks.show',$id));
-    }
-
-    public function listAjax(Request $request)
-    {
-        $input = $request->all();
-//        \Log::debug(['start'=>date('Y-m-d H:i:s',$input['start']),'end'=>date('Y-m-d H:i:s',$input['end']),'user_id'=>$input['user_id']]);
-        $task = \DB::select($this->getTasksSql().' WHERE end_at >=from_unixtime(:start) and end_at <=from_unixtime(:end) and user_id=:user_id and hours > 0.4 and deleted_at is NULL', ['start'=>$input['start'],'end'=>$input['end'],'user_id'=>$input['user_id']]);
-
-//        \Log::debug($task);
-        return \Response::json($task);
-    }
-
-    private function getTasksSql()
-    {
-        return 'SELECT id,title,hours,price,tasktype_id, CASE LEFT(title,1) WHEN \'*\' THEN \'#00c0ef\' WHEN \'!\' THEN \'#dd4b39\' WHEN \'^\' THEN \'#00a65a\' WHEN \'~\' THEN \'#3c8dbc\' ELSE \'#666\' END as color,end_at as startat,DATE_ADD(end_at,INTERVAL (hours*60) MINUTE) as endat,taskstatus_id as taskstatus,IF(hour(end_at)<6,1,0) as allday from tasks ';
-    }
-
-    public function showAjax($id)
-    {
-        $task = $this->taskRepository->findWithoutFail($id);
-
-        if (empty($task)) {
-            return 'Not found! The task may disabled right now!';
-        }
-        $atts = $this->taskEavRepository;
-        $eavValue = $this->taskEavValueRepository;
-        //$subTask = $this->taskRepository->subTaskInfo($task->task_id);
-        $taskgroup = $this->taskgroupRepository->findWhere(['task_id'=>$id,'user_id'=>\Auth::id()])->first();
-        return view('tasks.ajax_show',compact('task','atts','eavValue','taskgroup'));
-    }
-
-    /**
      * Show the form for editing the specified Task.
      *
      * @param  int $id
@@ -614,6 +518,102 @@ class TaskController extends AppBaseController
         Flash::success('Task deleted successfully.');
 
         return redirect(route('tasks.index'));
+    }
+
+    /**
+     * @return \Illuminate\View\ajax
+     */
+    public function productajax(Request $request)
+    {
+        $input = $request->all();
+        $term='%'.$input['term'].'%';//, concat(start_at,plan_at,finish_at) as descr
+        $userlist = \DB::select("select id,concat(prod_name,' ',prod_version,' (',prod_sku,')') as text,concat('产品经理:',prod_manager,'; 测试经理:',test_manager,'; 开发经理:',proj_manager,'; 运维经理:',if((SELECT COUNT(*) from users WHERE id=yw_person)=0,'未分配',(SELECT name from users WHERE id=yw_person))) AS descr
+ from p_product_info where prod_sku LIKE :prod_sku or `prod_name` LIKE :prod_name ORDER BY id DESC LIMIT 20", ['prod_sku'=>$term,'prod_name'=>$term]);
+        return \Response::json($userlist);
+    }
+
+    public function calendar()
+    {
+        $myTeams = \Auth::user()->getTeams(\Auth::id(),[\Auth::id()=>\Auth::user()->name]);
+        $tasktype = $this->tasktypeRepository->getUserTaskTypeList();
+        $planToTasks = \DB::select($this->getTasksSql().' WHERE (hours = 0 or taskstatus_id <> 5) and deleted_at is NULL and user_id=:user_id order by end_at ASC',
+            ['user_id'=>\Auth::id()]);
+//        dd($tasks);
+        return view('tasks.calendar',compact('myTeams','tasktype','planToTasks'));
+    }
+
+    public function createAjax(Request $request)
+    {
+        $input = $request->all();
+        if (!isset($input['title'])){
+            return 'Title cannot be empty!';
+        }
+        $user = \Auth::user();
+        $input['user_id']=$user->id;
+        $input['taskstatus_id']=1;
+        $task = $this->taskRepository->create($input);
+        if ($user->leader) {
+            $this->taskgroupRepository->create(['task_id'=>$task->id,'user_id'=>$user->leader]);
+        }
+
+        return $task->id;
+    }
+
+    public function updateAjax(Request $request)
+    {
+        $input = $request->all();
+        $task = $this->taskRepository->findWithoutFail($input['id']);
+        if (empty($task) || $task->user_id<>\Auth::id()) {
+            return 'Task not found';
+        }
+        $task = $this->taskRepository->update($input,$input['id']);
+
+        return 'OK';
+    }
+
+    public function share($id)
+    {
+        $task = $this->taskRepository->findWithoutFail($id);
+        if (empty($task) || $task->user_id<>\Auth::id()) {
+            Flash::error('Task not found');
+            return redirect(route('tasks.index'));
+        }
+        $price = $task->price ? 0 : 1;
+
+        \DB::update('update tasks set price='.$price.' where id='.$id);
+
+        Flash::success('Task updated successfully.');
+
+        return redirect(route('tasks.show',$id));
+    }
+
+    public function listAjax(Request $request)
+    {
+        $input = $request->all();
+//        \Log::debug(['start'=>date('Y-m-d H:i:s',$input['start']),'end'=>date('Y-m-d H:i:s',$input['end']),'user_id'=>$input['user_id']]);
+        $task = \DB::select($this->getTasksSql().' WHERE end_at >=from_unixtime(:start) and end_at <=from_unixtime(:end) and user_id=:user_id and hours > 0.4 and deleted_at is NULL', ['start'=>$input['start'],'end'=>$input['end'],'user_id'=>$input['user_id']]);
+
+//        \Log::debug($task);
+        return \Response::json($task);
+    }
+
+    private function getTasksSql()
+    {
+        return 'SELECT id,title,hours,price,tasktype_id, CASE LEFT(title,1) WHEN \'*\' THEN \'#00c0ef\' WHEN \'!\' THEN \'#dd4b39\' WHEN \'^\' THEN \'#00a65a\' WHEN \'~\' THEN \'#3c8dbc\' ELSE \'#666\' END as color,end_at as startat,DATE_ADD(end_at,INTERVAL (hours*60) MINUTE) as endat,taskstatus_id as taskstatus,IF(hour(end_at)<6,1,0) as allday from tasks ';
+    }
+
+    public function showAjax($id)
+    {
+        $task = $this->taskRepository->findWithoutFail($id);
+
+        if (empty($task)) {
+            return 'Not found! The task may disabled right now!';
+        }
+        $atts = $this->taskEavRepository;
+        $eavValue = $this->taskEavValueRepository;
+        //$subTask = $this->taskRepository->subTaskInfo($task->task_id);
+        $taskgroup = $this->taskgroupRepository->findWhere(['task_id'=>$id,'user_id'=>\Auth::id()])->first();
+        return view('tasks.ajax_show',compact('task','atts','eavValue','taskgroup'));
     }
 
 

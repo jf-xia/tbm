@@ -2,6 +2,7 @@
 
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Stevenyangecho\UEditor\Uploader\UploadScrawl;
 use Stevenyangecho\UEditor\Uploader\UploadFile;
@@ -119,7 +120,7 @@ class UeditorController extends BaseController
                     'fieldName' => $config['catcherFieldName'],
                 );
 
-                $sources = \Input::get($upConfig['fieldName']);
+                $sources = Input::get($upConfig['fieldName']);
                 $list = [];
                 foreach ($sources as $imgUrl) {
                     $upConfig['imgUrl'] = $imgUrl;

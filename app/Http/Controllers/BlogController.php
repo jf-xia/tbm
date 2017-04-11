@@ -75,13 +75,13 @@ class BlogController extends AppBaseController
             abort(404);
         }
 
-
 //        $cache = \Cache::store('file');
 //        $cache->put('post',[$id.'_'.\Auth::id()=>1]+$cache->get('post'),30);
 //        $test = !array_key_exists($id.'_'.\Auth::id(),$cache->get('post'));
         //todo price+1 when post has been read
         if ($post->price>0 && !session('post'.$id)){
-            $this->taskRepository->update(['price'=>($post->price+1),'updated_at'=>($post->updated_at)],$id);
+            $post->timestamps = false;
+            $post->update(['price'=>($post->price+1)]);
             session(['post'.$id=>$id]);
         }
         $userresumes = $this->userresumeRepository->findWhere(['user_id'=>$post->user_id])->toArray();

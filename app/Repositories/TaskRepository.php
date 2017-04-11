@@ -64,7 +64,7 @@ class TaskRepository extends BaseRepository //implements CacheableInterface
                 $tasks = $tasks->whereIn('id',array_column($postIds,'task_id'));
             }
         }
-        if ($sort=='created_at'||$sort=='price') {
+        if ($sort=='created_at'||$sort=='updated_at'||$sort=='price') {
             $tasks = $tasks->orderBy($sort,'desc');
         }
 

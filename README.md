@@ -95,4 +95,11 @@ php artisan infyom:model Task_tag --relations
 php artisan infyom:model Tag --relations
 			name string text
 			task_id integer text			mtm,Task,task_tag,tag_id,task_id
+			
+php artisan infyom:model EavAttribute  --fromTable --tableName=eav_attributes
+php artisan infyom:model EavCompany  --fromTable --tableName=eav_company
+php artisan infyom:model EavEntity  --fromTable --tableName=eav_entity
+php artisan infyom:model EavType  --fromTable --tableName=eav_types
+php artisan infyom:model EavValue  --fromTable --tableName=eav_value
+
 ```

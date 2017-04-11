@@ -50,7 +50,7 @@ class BlogController extends AppBaseController
         return $tagHtml;
     }
 
-    public function index($sort='created_at',$tagid=0,$search=0){
+    public function index($sort='updated_at',$tagid=0,$search=0){
         $posts = $this->taskRepository->postTasks(0,$sort,$tagid,$search);
         $tagHtml = $this->tagBlock($tagid);
         $tags = $this->tagRepository->all()->sortBy('sort')->toArray();
@@ -81,7 +81,7 @@ class BlogController extends AppBaseController
 //        $test = !array_key_exists($id.'_'.\Auth::id(),$cache->get('post'));
         //todo price+1 when post has been read
         if ($post->price>0 && !session('post'.$id)){
-            $this->taskRepository->update(['price'=>($post->price+1)],$id);
+            $this->taskRepository->update(['price'=>($post->price+1),'updated_at'=>($post->updated_at)],$id);
             session(['post'.$id=>$id]);
         }
         $userresumes = $this->userresumeRepository->findWhere(['user_id'=>$post->user_id])->toArray();

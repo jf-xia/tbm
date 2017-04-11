@@ -29,8 +29,8 @@
         <div class="col-md-12">
 
             <!-- /.col-md-3" -->
-            <div class="col-md-3" id="droppable">
-                <div class="box box-solid">
+            <div class="col-md-3">
+                <div class="box box-solid" id="droppable">
                     <div class="box-header with-border">
                         <h3 class="box-title">@lang('view.Create Event')</h3>
                     </div>

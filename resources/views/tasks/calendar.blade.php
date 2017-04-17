@@ -503,9 +503,9 @@
                 }
             },
 //            timeFormat: 'H(:mm)',
-            minTime: "06:00:00", maxTime: "22:30:00",
+            minTime: "08:00:00", maxTime: "19:00:00",
             weekends: weekend,
-            height: 935,
+//            height: 935,
             header: {left: 'prev,next today', center: 'title', right: 'month,agendaWeek,agendaDay,listWeek,weekend'}, //,listMonth  timelineDay
             defaultView: 'agendaWeek',
             navLinks: true, weekNumbers: true, eventLimit: true,
@@ -514,7 +514,7 @@
 //            businessHours: true,
             events: function(start, end, timezone, callback) {
                 getTask(start,end,callback);
-                habits();
+//                habits();
 //                cache: true
             },
             eventMouseover: function(calEvent, jsEvent, view){

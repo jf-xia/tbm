@@ -505,7 +505,7 @@
 //            timeFormat: 'H(:mm)',
             minTime: "08:00:00", maxTime: "19:00:00",
             weekends: weekend,
-//            height: 935,
+            height: 680,
             header: {left: 'prev,next today', center: 'title', right: 'month,agendaWeek,agendaDay,listWeek,weekend'}, //,listMonth  timelineDay
             defaultView: 'agendaWeek',
             navLinks: true, weekNumbers: true, eventLimit: true,

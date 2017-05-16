@@ -74,7 +74,7 @@ class BlogController extends AppBaseController
         if (empty($post) || $post->price==0) {
             abort(404);
         }
-
+        
 //        $cache = \Cache::store('file');
 //        $cache->put('post',[$id.'_'.\Auth::id()=>1]+$cache->get('post'),30);
 //        $test = !array_key_exists($id.'_'.\Auth::id(),$cache->get('post'));

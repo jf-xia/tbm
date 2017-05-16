@@ -559,6 +559,28 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
         return $task->id;
     }
 
+    public function cloneAjax(Request $request)
+    {
+        $input = $request->all();
+        $task = $this->taskRepository->findWithoutFail($input['id']);
+        $user = \Auth::user();
+        if (empty($task) || $task->user_id<>$user->id) {
+            return 'Task not found';
+        }
+        $input = $task->toArray();
+//        unset($input['id']);
+        unset($input['informed']);
+        $input['taskstatus_id']=1;
+        dd($input);
+        $cloneTask = $this->taskRepository->create($input);
+        if ($user->leader) {
+            $this->taskgroupRepository->create(['task_id'=>$cloneTask->id,'user_id'=>$user->leader]);
+        }
+        dd($cloneTask);
+
+        return $cloneTask->id;
+    }
+
     public function updateAjax(Request $request)
     {
         $input = $request->all();

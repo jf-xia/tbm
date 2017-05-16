@@ -55,6 +55,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('tasks/listajax', 'TaskController@listAjax')->name('tasks.listajax');
     Route::get('tasks/updateajax', 'TaskController@updateAjax')->name('tasks.updateajax');
     Route::get('tasks/createajax', 'TaskController@createAjax')->name('tasks.createajax');
+    Route::get('tasks/cloneajax', 'TaskController@cloneAjax')->name('tasks.cloneajax');
     Route::get('tasks/productajax', 'TaskController@productajax');
     Route::get('tasks/share/{id}', 'TaskController@share')->name('tasks.share');
 

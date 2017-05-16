@@ -394,12 +394,12 @@
 
     /* clone event */
     function cloneTask(event_id){
-        var event = $("#calendar").fullCalendar('clientEvents', event_id)[0];
+//        var event = $("#calendar").fullCalendar('clientEvents', event_id)[0];
 //        console.log(event);
         $.ajax({
-            url: '{{ route('tasks.createajax') }}', type: 'GET',
+            url: '{{ route('tasks.cloneajax') }}', type: 'GET',
             data: {
-                title:event.title, end_at: event.start.format('YYYY-MM-DD HH:mm:ss'), hours: event.hours,  tasktype_id: event.tasktype,
+                id:event_id//, title:event.title, end_at: event.start.format('YYYY-MM-DD HH:mm:ss'), hours: event.hours,  tasktype_id: event.tasktype,
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 alert(errorThrown);
@@ -505,7 +505,7 @@
 //            timeFormat: 'H(:mm)',
             minTime: "08:00:00", maxTime: "19:00:00",
             weekends: weekend,
-            height: 680,
+            height: 750,
             header: {left: 'prev,next today', center: 'title', right: 'month,agendaWeek,agendaDay,listWeek,weekend'}, //,listMonth  timelineDay
             defaultView: 'agendaWeek',
             navLinks: true, weekNumbers: true, eventLimit: true,

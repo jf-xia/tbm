@@ -15,8 +15,8 @@
         @if($task->end_at) @lang('db.end_at'): {{ date('Y-m-d',strtotime($task->end_at)) }}; @endif
         @if($task->hours) @lang('db.hours'):{{ $task->hours }}; @endif
         @if($task->price) @lang('db.price'):{{ $task->price }}; @endif
-        {{--@lang('db.project_id'):{!! $task->project_name !!};--}}
-        {{--@lang('db.product_id'):{!! $task->product_name !!};--}}
+        <br >@lang('db.product_id'):{!! $task->product_name !!}
+		<br >@lang('db.project_id'):{!! $task->project_name !!}
     </h3>
 </section>
 <div class="content">

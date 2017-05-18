@@ -570,13 +570,13 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
         $input = $task->toArray();
 //        unset($input['id']);
         unset($input['informed']);
+        unset($input['taskgroup']);
         $input['taskstatus_id']=1;
-        dd($input);
         $cloneTask = $this->taskRepository->create($input);
         if ($user->leader) {
             $this->taskgroupRepository->create(['task_id'=>$cloneTask->id,'user_id'=>$user->leader]);
         }
-        dd($cloneTask);
+//        dd($cloneTask);
 
         return $cloneTask->id;
     }

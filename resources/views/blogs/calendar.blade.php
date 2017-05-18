@@ -35,19 +35,13 @@
                 m = date.getMonth(),
                 y = date.getFullYear();
         $('#calendar').fullCalendar({
-            minTime: "06:00:00",
-            maxTime: "24:00:00",
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay,listWeek'//,listMonth  timelineDay
-            },
-            navLinks: true,
+            minTime: "08:00:00", maxTime: "19:00:00",
+            height: 750,
+            header: {left: 'prev,next today', center: 'title', right: 'month,agendaWeek,agendaDay,listMonth'}, //,listMonth  timelineDay
+            weekends: false,
+            defaultView: 'month',
+            navLinks: true, weekNumbers: true, //eventLimit: true,
             displayEventTime: false,
-            weekNumbers: true,
-//            scrollTime: '00:00',
-//            businessHours: true,
-            eventLimit: true,
             events: function(start, end, timezone, callback) {
                 $.ajax({
                     url: '{{ route('tasks.listajax') }}',

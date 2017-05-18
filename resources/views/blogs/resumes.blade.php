@@ -9,6 +9,10 @@
     <div class="row">
         @include('blogs.about')
         <hr />
+        {{--@if(Auth::check())--}}
+        @include('blogs.calendar')
+        {{--@endif--}}
+        <hr />
         <div class="col-xs-12 col-sm-7">
             <!-- WORK EXPERIENCE -->
             <div class="box">
@@ -120,10 +124,6 @@
             {{--</div>--}}
         </div>
     </div>
-    <hr />
-    {{--@if(Auth::check())--}}
-        @include('blogs.calendar')
-    {{--@endif--}}
 @endsection
 
 @section('scripts')

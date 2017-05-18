@@ -27,6 +27,7 @@ Route::get('sort/{sort}/{tag}/{search}', 'BlogController@index')->name('index.se
 Route::get('/{id}', 'BlogController@userinfo')->name('index.user')->where('id', '[0-9]+');
 Route::get('post/{id}', 'BlogController@post')->name('index.post')->where('id', '[0-9]+');
 
+Route::get('tasks/listajax', 'TaskController@listAjax')->name('tasks.listajax');
 Route::get('habitsajax/{user_id}', 'BlogController@habitsAjax');//->name('resumse.habitsajax');
 Route::any('update_info', 'BlogController@update_info')->name('resumse.update_info');
 //Route::any('/upload', 'UploadController@serve')->name('upload.serve');
@@ -52,7 +53,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('tasks/project/{id}', 'ProjectController@show')->name('tasks.project');
     Route::get('tasks/usersajaxlist', 'Auth\UsersController@ajaxlist')->name('users.ajaxlist');
     Route::get('tasks/showajax/{id}', 'TaskController@showAjax')->name('tasks.showajax');
-    Route::get('tasks/listajax', 'TaskController@listAjax')->name('tasks.listajax');
     Route::get('tasks/updateajax', 'TaskController@updateAjax')->name('tasks.updateajax');
     Route::get('tasks/createajax', 'TaskController@createAjax')->name('tasks.createajax');
     Route::get('tasks/cloneajax', 'TaskController@cloneAjax')->name('tasks.cloneajax');

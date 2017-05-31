@@ -196,7 +196,7 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
             });
         } catch (Exception $e) {
 //            throw $e;
-//            \Log::warning($e);
+            \Log::warning($e);
         }
     }
 
@@ -584,6 +584,9 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
     public function updateAjax(Request $request)
     {
         $input = $request->all();
+		if (empty($input)){
+            return 'Request input empty';
+        }
         $task = $this->taskRepository->findWithoutFail($input['id']);
         if (empty($task) || $task->user_id<>\Auth::id()) {
             return 'Task not found';

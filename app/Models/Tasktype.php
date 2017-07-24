@@ -30,7 +30,8 @@ class Tasktype extends Model
         'product_required',
         'comment_required',
         'user_id',
-        'tasktype_id'
+        'tasktype_id',
+        'bentity_id'  //huayan
     ];
 
     /**
@@ -68,9 +69,12 @@ class Tasktype extends Model
 //        }
         //$taskTypeSelect=array_column(Tasktype::whereIn('id',explode('|',$this->attributes['tasktype_id']))->get()->toArray(),'name','id');
         $taskTypeSelect=[];
+//        dd($this->getTasktypeIdsAttribute());
         if ($this->getTasktypeIdsAttribute()[0]){
+//            \DB::setFetchMode(\PDO::FETCH_ASSOC);
             $typeQy = \DB::select("select id, name from tasktypes where deleted_at is null and id in (".implode(',',$this->getTasktypeIdsAttribute()).")");
             $taskTypeSelect = array_column($typeQy,'name','id');
+//            dd($typeQy,$taskTypeSelect);
         }
         return $taskTypeSelect;
     }

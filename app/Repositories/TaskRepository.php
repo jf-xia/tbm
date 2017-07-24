@@ -19,18 +19,18 @@ class TaskRepository extends BaseRepository //implements CacheableInterface
 //    use CacheableRepository;
 
     /**
-     * @var array
+     * @var array //huayan
      */
     protected $fieldSearchable = [
-        'title',
-        'content',
-        'hours',
-        'end_at',
-        'informed',
-        'project_id',
-        'user_id',
-        'taskstatus_id',
-        'tasktype_id'
+        'title'=>'like',
+//        'content',
+//        'hours',
+//        'end_at',
+//        'informed',
+//        'project_id',
+//        'user_id',
+//        'taskstatus_id',
+//        'tasktype_id'
     ];
 
     /**
@@ -71,6 +71,9 @@ class TaskRepository extends BaseRepository //implements CacheableInterface
         return $tasks;
     }
 
+
+
+    //原数据
     public function subTaskInfo($taskId)
     {
         $subTask=null;
@@ -84,16 +87,11 @@ class TaskRepository extends BaseRepository //implements CacheableInterface
         return $subTask;
     }
 
-//    public function subTaskInfo($taskId,$subTask=null)
-//    {
-//        $lastTask = $this->findWithoutFail($taskId);
-//        if ($lastTask){
-//            $subTask[$taskId] = $lastTask;
-//            if ($lastTask->task_id>0){
-//                $subTask = $this->subTaskInfo($lastTask->task_id,$subTask);
-//            }
-//        }
-//        return $subTask;
+
+    //获取业务库任务类型名称
+//    public  function getBenTaskList(){
+//        $getBenTaskList=array_column($this->all()->sortBy('id')->toArray(),'name','id');
+//        return $getBenTaskList;
 //    }
 
 }

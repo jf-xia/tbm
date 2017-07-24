@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\TaskDataTable;
+use App\Models\BentitSet; //huayan
 use App\Models\ProductMain;
 use App\Models\Task;
 use App\Models\Taskcomment;
 use App\Models\Tasktype;
 use App\Models\Upload;
 use App\Models\UploadLog;
+use FontLib\Table\Type\name; //huayan
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
@@ -18,7 +20,10 @@ use App\Repositories\TaskgroupRepository;
 use App\Repositories\TaskstatusRepository;
 use App\Repositories\Tasktype_eavRepository;
 use App\Repositories\Tasktype_eav_valueRepository;
+use App\Repositories\BentitsetRepository; //huayan
+
 use App\User;
+use App\Repositories\BentityRepository; //huayan
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\Input;
@@ -37,13 +42,18 @@ class TaskController extends AppBaseController
     private $taskgroupRepository;
     private $taskEavRepository;
     private $taskEavValueRepository;
+    private $bentityRepository; //huayan
+    private $bentitsetRepository; //huayan
 
     public function __construct(TaskRepository $taskRepo,
                                 TasktypeRepository $tasktypeRepo,
                                 Tasktype_eavRepository $taskEavRepo,
                                 Tasktype_eav_valueRepository $taskEavValueRepo,
                                 TaskstatusRepository $taskstatusRepo,
-                                TaskgroupRepository $taskgroupRepo)
+                                TaskgroupRepository $taskgroupRepo,
+                                BentityRepository $bentityRepository,
+                                BentitsetRepository $bentitsetRepository
+                               )
     {
         $this->taskRepository = $taskRepo;
         $this->tasktypeRepository = $tasktypeRepo;
@@ -51,13 +61,15 @@ class TaskController extends AppBaseController
         $this->taskgroupRepository = $taskgroupRepo;
         $this->taskEavRepository = $taskEavRepo;
         $this->taskEavValueRepository = $taskEavValueRepo;
+        $this->bentityRepository=$bentityRepository;
+        $this->bentitsetRepository=$bentitsetRepository;
     }
 
     public function test($id, Request $request)
     {
 //        $upload = Excel::load('public/uploads/import/tasks/9_2017-03-07-163627.xlsx');
         \DB::enableQueryLog();
-dd(\Auth::getSession()->getId(), \DB::getQueryLog());
+        dd(\Auth::getSession()->getId(), \DB::getQueryLog());
         $test = $this->taskRepository->findWithoutFail($id);
 //        $test = $this->tasktypeRepository->getUserTaskTypeList();
 //        $test = $this->taskstatusRepository->findWhere(['user_id'=>0]);
@@ -86,11 +98,13 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
      */
     public function create($tasktype_id=1)
     {
+
         $atts = $this->taskEavRepository->taskTypeEav($tasktype_id);
         $tasktype = $this->tasktypeRepository->find($tasktype_id);
-        //\App\Models\Tasktype::find($tasktype_id);
+//huayan
+        $getBenTaskList=Task::all();
         $selectTaskstatus = $this->taskstatusRepository->selectTaskstatus();
-        return view('tasks.create',compact('atts','tasktype_id','selectTaskstatus','tasktype'));
+        return view('tasks.create',compact('atts','tasktype_id','selectTaskstatus','tasktype','getBenTaskList'));
     }
 
     /**
@@ -103,6 +117,8 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
     public function store(CreateTaskRequest $request)
     {
         $input = $request->all();
+//        dd($input);
+
         $authUser=\Auth::user();
         $is_assigned=isset($input['assigned_to'])&&isset($input['task_id']);
 
@@ -118,6 +134,8 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
         $userIds=$input['informed'];
         $input['informed']=implode('|',$input['informed']);
 
+
+
         $task = $this->taskRepository->create($input);
 
         foreach($userIds as $userId){
@@ -126,6 +144,26 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
                 $this->taskgroupRepository->create(['task_id'=>$task->id,'user_id'=>$userId]);
             }
         }
+//循环写入bentitle
+//huayan
+//        dd(isset($input['bentitle']));
+        if(isset($input['bentitle'])){
+            //判断是否为字符串
+            if(is_string($input['bentitle'])){
+                $bentitle=explode('|',$input['bentitle']);
+               // dd($bentitle);
+            }else{
+                $bentitle=$input['bentitle'];
+            }
+            foreach($bentitle as $bentit){
+                $benId=$this->bentitsetRepository->findWhere(['task_id'=>$task->id,'ben_title_id'=>$bentit])->first();
+
+                if(!$benId){
+                    $this->bentitsetRepository->create(['task_id'=>$task->id,'ben_title_id'=>$bentit]);
+                }
+            }
+        }
+
 
         if (isset($input['attribute'])){
             $attributes = $input['attribute'];
@@ -133,6 +171,7 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
                 $this->taskEavValueRepository->create(['task_id'=>$task->id,'task_type_eav_id'=>$attKey,'task_value'=>$attValue]);
             }
         }
+
 
         if ($is_assigned){
             Flash::success('Task assigned successfully.');
@@ -196,7 +235,7 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
             });
         } catch (Exception $e) {
 //            throw $e;
-            \Log::warning($e);
+//            \Log::warning($e);
         }
     }
 
@@ -402,6 +441,7 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
             return redirect(route('tasks.index'));
         }
         $atts = $this->taskEavRepository;
+//        dd($atts);
         $eavValue = $this->taskEavValueRepository;
         $taskId = $task->task_id ? $task->task_id : $task->id;
         $subTask = $this->taskRepository->subTaskInfo($taskId);
@@ -454,6 +494,7 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
     {
         $task = $this->taskRepository->findWithoutFail($id);
         $input = $request->all();
+//        dd($input);
         if (empty($task) || $task->user_id<>\Auth::id()) {
             Flash::error('Task not found');
 
@@ -463,13 +504,25 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
         if (isset($input['informed'])){
             foreach($input['informed'] as $userId){
                 $groupId=$this->taskgroupRepository->findWhere(['task_id'=>$id,'user_id'=>$userId])->first();
+//                dd($groupId);
                 if (!$groupId){
                     $this->taskgroupRepository->create(['task_id'=>$id,'user_id'=>$userId]);
                 }
             }
             $input['informed']=implode('|',$input['informed']);
         }
+//huayan
+            if(isset($input['bentitle'])){
 
+                BentitSet::where('task_id','=',$task->id)->delete();
+                foreach($input['bentitle'] as $bentit){
+                    $benId=$this->bentitsetRepository->findWhere(['task_id'=>$task->id,'ben_title_id'=>$bentit])->first();
+                    if(!$benId){
+                     $this->bentitsetRepository->create(['task_id'=>$task->id,'ben_title_id'=>$bentit]);
+                    }
+
+                }
+            }
         $task = $this->taskRepository->update($input, $id);
 
         if (isset($input['attribute'])){
@@ -531,6 +584,16 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
  from p_product_info where prod_sku LIKE :prod_sku or `prod_name` LIKE :prod_name ORDER BY id DESC LIMIT 20", ['prod_sku'=>$term,'prod_name'=>$term]);
         return \Response::json($userlist);
     }
+//huayan
+//业务库类型
+    public function bentitleajax(Request $request)
+    {
+        $input = $request->all();
+        \Log::alert($input);
+        $term='%'.$input['term'].'%';//, concat(start_at,plan_at,finish_at) as descr
+        $userlist = \DB::select("select id,(title) as text from tasks where tasktype_id=:tasktype_id and  title LIKE :title  ORDER BY id DESC LIMIT 20", ['tasktype_id'=>$input['bentask_type'],'title'=>$term]);
+        return \Response::json($userlist);
+    }
 
     public function calendar()
     {
@@ -584,9 +647,6 @@ dd(\Auth::getSession()->getId(), \DB::getQueryLog());
     public function updateAjax(Request $request)
     {
         $input = $request->all();
-		if (empty($input)){
-            return 'Request input empty';
-        }
         $task = $this->taskRepository->findWithoutFail($input['id']);
         if (empty($task) || $task->user_id<>\Auth::id()) {
             return 'Task not found';

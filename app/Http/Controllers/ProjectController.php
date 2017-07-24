@@ -64,7 +64,7 @@ class ProjectController extends AppBaseController
     public function store(CreateProjectRequest $request)
     {
         $input = $request->all();
-
+//       dd($input);
         $project = $this->projectRepository->create($input);
 
         Flash::success('Project saved successfully.');

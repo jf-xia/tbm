@@ -7,7 +7,7 @@ use App\Repositories\BaseRepository;
 use Prettus\Repository\Contracts\CacheableInterface;
 use Prettus\Repository\Traits\CacheableRepository;
 
-class TasktypeRepository extends BaseRepository implements CacheableInterface
+class TasktypeRepository extends BaseRepository //implements CacheableInterface
 {
     protected $cacheMinutes = 90;
 
@@ -15,7 +15,7 @@ class TasktypeRepository extends BaseRepository implements CacheableInterface
 //    //or   all, paginate, find, findByField, findWhere, getByCriteria
 //    protected $cacheExcept = ['find'];
 
-    use CacheableRepository;
+//    use CacheableRepository;
     /**
      * @var array
      */
@@ -23,7 +23,8 @@ class TasktypeRepository extends BaseRepository implements CacheableInterface
         'name',
         'color',
         'assigned_to',
-        'user_id'
+        'user_id',
+        'bentity_id'  //huayan
     ];
 
     /**

@@ -12,6 +12,7 @@ use App\Models\Tasktype_eav;
 use App\Repositories\TaskRepository;
 use App\Repositories\TasktypeRepository;
 use App\Repositories\Tasktype_eavRepository;
+use App\Repositories\BentityRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
@@ -23,12 +24,14 @@ class TasktypeController extends AppBaseController
     private $taskRepository;
     private $tasktypeRepository;
     private $taskTypeEavRepo;
+    private $bentityRepository;//huayan
 
-    public function __construct(TaskRepository $taskRepo,TasktypeRepository $tasktypeRepo,Tasktype_eavRepository $tasktype_eavRepository)
+    public function __construct(TaskRepository $taskRepo,TasktypeRepository $tasktypeRepo,Tasktype_eavRepository $tasktype_eavRepository,BentityRepository $bentityRepository)
     {
         $this->taskRepository = $taskRepo;
         $this->tasktypeRepository = $tasktypeRepo;
         $this->taskTypeEavRepo = $tasktype_eavRepository;
+        $this->bentityRepository=$bentityRepository;
     }
 
     /**
@@ -61,7 +64,10 @@ class TasktypeController extends AppBaseController
     public function create()
     {
         $taskTypeList = $this->tasktypeRepository->getTaskTypeList();
-        return view('tasktypes.create',compact('taskTypeList'));
+//huayan
+        $bentityList=$this->bentityRepository->getBentityList();
+//        dd($taskTypeList);
+        return view('tasktypes.create',compact('taskTypeList','bentityList'));
     }
 
     /**
@@ -74,6 +80,7 @@ class TasktypeController extends AppBaseController
     public function store(CreateTasktypeRequest $request)
     {
         $input = $request->all();
+//        dd($input);
         $input['user_id']=\Auth::id();
 
         if (isset($input['tasktype_id'])){
@@ -81,7 +88,13 @@ class TasktypeController extends AppBaseController
         } else {
             $input['tasktype_id']='';
         }
-
+//huayan
+         if(isset($input['bentity_id'])){
+             $input['bentity_id']=implode('|',$input['bentity_id']);
+//             dd($input['bentity_id']);
+         }else{
+             $input['bentity_id']='';
+         }
         $tasktype = $this->tasktypeRepository->create($input);
 
         Flash::success('Tasktype saved successfully.');
@@ -121,6 +134,8 @@ class TasktypeController extends AppBaseController
         $tasktype = $this->tasktypeRepository->findWithoutFail($id);
         $tasktypeeav = $this->taskTypeEavRepo->taskTypeEav($id);
         $taskTypeList = $this->tasktypeRepository->getTaskTypeList();
+        $bentityList=$this->bentityRepository->getBentityList();//huayan
+
 
         if (empty($tasktype)) {
             Flash::error('Tasktype not found');
@@ -128,7 +143,7 @@ class TasktypeController extends AppBaseController
             return redirect(route('tasktypes.index'));
         }
 
-        return view('tasktypes.edit',compact('tasktype','tasktypeeav','taskTypeList'));
+        return view('tasktypes.edit',compact('tasktype','tasktypeeav','taskTypeList','bentityList'));
     }
 
     /**
@@ -148,12 +163,18 @@ class TasktypeController extends AppBaseController
 
             return redirect(route('tasktypes.index'));
         }
-        $input = $request->all();
 
+        $input = $request->all();
         if (isset($input['tasktype_id'])){
             $input['tasktype_id']=implode('|',$input['tasktype_id']);
         } else {
             $input['tasktype_id']='';
+        }
+//huayan
+        if(isset($input['bentity_id'])){
+            $input['bentity_id']=implode('|',$input['bentity_id']);
+        }else{
+            $input['bentity_id']='';
         }
 
         $tasktype = $this->tasktypeRepository->update($input, $id);

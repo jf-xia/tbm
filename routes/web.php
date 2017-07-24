@@ -32,6 +32,16 @@ Route::get('habitsajax/{user_id}', 'BlogController@habitsAjax');//->name('resums
 Route::any('update_info', 'BlogController@update_info')->name('resumse.update_info');
 //Route::any('/upload', 'UploadController@serve')->name('upload.serve');
 
+//huayan
+Route::resource('bentity','BentityController');
+Route::get('bentity/lists/{id}/{benname?}/{search?}','BentityController@lists')->name('bentity.lists');
+Route::get('bentity/typedetail/{tasktype_id}/{bentit_id}/{benname}/{tag?}','BentityController@typedetail')->name('bentity.typedetail');
+Route::get('bentity/detail/{id}/{benname?}/{tasktitle?}/{tasktypeid?}/{tag?}','BentityController@detail')->name('bentity.detail');
+Route::resource('bentitype','Bentity_typeController');
+Route::resource('benattrset','BentityAttrSetController');
+Route::resource('benuser','BentityUserController');
+Route::get('tasks/benajaxlist', 'TaskController@bentitleajax');
+
 Route::get('test/{id}', 'TaskController@test');
 
 
@@ -86,7 +96,7 @@ Route::group(['middleware' => ['auth']], function () {
     //Route::resource('taskcomments', 'TaskcommentController');
     Route::get('tasktypeEavs/create/{tasktype_id}', 'Tasktype_eavController@create')->name('tasktypeEavs.createByTypeId');
     Route::resource('tasktypeEavs', 'Tasktype_eavController');
-//    Route::resource('tasktypeeavvalues', 'Tasktype_eav_valueController');
+//  Route::resource('tasktypeeavvalues', 'Tasktype_eav_valueController');
 
     Route::get('reports/chart', 'ReportController@chart')->name('reports.chart');
     Route::get('reports/task/{tasktype}', 'ReportController@task')->name('reports.task');
@@ -98,6 +108,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('role_permission', 'Auth\RolesPermissionsController');
     Route::resource('roles', 'Auth\RolesController');
     Route::resource('permissions', 'Auth\PermissionsController');
+
 //    \Event::listen('Illuminate\Database\Events\QueryExecuted', function ($query) {
 //        echo '<pre class="queryLog">'.'SQL: '.$query->sql.'<br>VAR: '.json_encode($query->bindings).',TIME：'.$query->time.'</pre>';
 ////        echo implode(',',$query->bindings);

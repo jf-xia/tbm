@@ -15,7 +15,13 @@ class UsersWithRoles implements CriteriaInterface  {
 	 */
 	public function apply($model, RepositoryInterface $repository )
 	{
-		$model = $model->with('roles')->where('leader','=',\Auth::id());
+		//$model = $model->with('roles')->where('leader','=',\Auth::id());
+		$user=\Auth::user();
+		if ($user->isAdmin()){
+			$model = $model->with('roles');
+		} else {
+			$model = $model->with('roles')->where('leader','=',$user->id);
+		}
 		return $model;
 	}
 

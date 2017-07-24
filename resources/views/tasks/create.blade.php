@@ -1,5 +1,6 @@
 @extends('layouts.app')
-
+<!-- //huayan -->
+{{--<script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>--}}
 @section('content')
     <section class="content-header">
         <h1>
@@ -14,8 +15,8 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'tasks.store']) !!}
 
+                    {!! Form::open(['route' => 'tasks.store','onsubmit'=>'javascript:$("#btnsubmit").attr("disabled","disabled")']) !!}
                         @include('tasks.cfields')
 
                     {!! Form::close() !!}

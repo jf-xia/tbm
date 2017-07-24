@@ -112,8 +112,7 @@ class Graph
     //每周端口可用率
     public function getPortUseEnable(){
         // $sql="select name,enable as ratio from z_product_port where YEARWEEK(date_format(createtime,'%Y-%m-%d')) = YEARWEEK(now())-1 ORDER BY enable DESC";
-        //$sql="select name,enable as ratio from z_product_port where createtime in (SELECT max(createtime) from z_product_port) ORDER BY enable DESC limit 0,10";
-        $sql="select name,enable as ratio  from z_product_port where name <>'上周端口可用率正常' and enable < 99 AND date(createtime) >= (SELECT date(max(createtime)) from z_product_port) ORDER BY enable DESC limit 0,10";
+        $sql="select name,enable as ratio from z_product_port where createtime in (SELECT max(createtime) from z_product_port) ORDER BY enable DESC limit 0,10";
         $data = DB::select($sql);
         $name = '';
         $ratio = '';

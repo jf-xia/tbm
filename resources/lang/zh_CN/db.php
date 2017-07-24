@@ -128,4 +128,8 @@ return [
     'risk_level'=>'风险等级',
     'ydate'=>'年份',
 
+    'context'=>'详情',
+    'bentity_id'=>'业务名称',
+    'bentity_name'=>'业务名称',
+    'tasktypes_id'=>'任务类型'
 ];

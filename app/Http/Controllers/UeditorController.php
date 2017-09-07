@@ -31,7 +31,7 @@ class UeditorController extends BaseController
                 break;
             case 'uploadimage':
                 $upConfig = array(
-                    "pathFormat" => $config['imagePathFormat'],
+                    "pathFormat" => "/uploads/ueditor/image".\Auth::id()."/{yyyy}{mm}{dd}/{time}",
                     "maxSize" => $config['imageMaxSize'],
                     "allowFiles" => $config['imageAllowFiles'],
                     'fieldName' => $config['imageFieldName'],

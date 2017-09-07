@@ -2,6 +2,7 @@
 /public/uploads
 /vendor
 /.idea
+/.vscode
 /.svn
 /Modules
 /tests

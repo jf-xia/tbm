@@ -4,18 +4,19 @@
 /.idea
 /.vscode
 /.svn
-/Modules
-/tests
-/storage
 Homestead.json
 Homestead.yaml
-.env
-_ide_helper.php
-.phpstorm.meta.php
+composer.lock
 phpunit.xml
 
 # Laravel 5 & Lumen specific
-bootstrap/cache/
+Modules
+tests
+bootstrap/cache/*
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+storage/logs
 .env.*.php
 .env.php
 .env

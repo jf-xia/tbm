@@ -188,10 +188,13 @@ return [
         Zizaco\Entrust\EntrustServiceProvider::class,
         Nwidart\Modules\LaravelModulesServiceProvider::class,
 
-        Modules\Blog\Providers\BlogServiceProvider::class,
+        //Modules\Blog\Providers\BlogServiceProvider::class,
         Becker\Zabbix\ZabbixServiceProvider::class,
 
         Overtrue\LaravelWechat\ServiceProvider::class,
+
+        Way\Generators\GeneratorsServiceProvider::class,
+        Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
 
     ],
 

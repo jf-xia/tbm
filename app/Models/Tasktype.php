@@ -80,7 +80,11 @@ class Tasktype extends Model
     }
 
     public function getTasktypeIdsAttribute(){
-        return explode('|',$this->attributes['tasktype_id']);
+        $tasktype_id=[];
+        foreach(explode('|',$this->attributes['tasktype_id']) as $val){
+            $tasktype_id[]=(int)$val;
+        }
+        return $tasktype_id;
     }
 
     public function getTasktypeNameAttribute()

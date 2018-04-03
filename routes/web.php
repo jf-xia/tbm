@@ -35,17 +35,16 @@ Route::get('tasks/listajax', 'TaskController@listAjax')->name('tasks.listajax');
 //Route::any('/upload', 'UploadController@serve')->name('upload.serve');
 
 //huayan
-// Route::resource('bentity', 'BentityController');
-// Route::get('bentity/lists/{id}/{benname?}/{search?}', 'BentityController@lists')->name('bentity.lists');
-// Route::get('bentity/typedetail/{tasktype_id}/{bentit_id}/{benname}/{tag?}', 'BentityController@typedetail')->name('bentity.typedetail');
-// Route::get('bentity/detail/{id}/{benname?}/{tasktitle?}/{tasktypeid?}/{tag?}', 'BentityController@detail')->name('bentity.detail');
-// Route::resource('bentitype', 'Bentity_typeController');
-// Route::resource('benattrset', 'BentityAttrSetController');
-// Route::resource('benuser', 'BentityUserController');
-// Route::get('tasks/benajaxlist', 'TaskController@bentitleajax');
+ Route::resource('bentity', 'BentityController');
+ Route::get('bentity/lists/{id}/{benname?}/{search?}', 'BentityController@lists')->name('bentity.lists');
+ Route::get('bentity/typedetail/{tasktype_id}/{bentit_id}/{benname}/{tag?}', 'BentityController@typedetail')->name('bentity.typedetail');
+ Route::get('bentity/detail/{id}/{benname?}/{tasktitle?}/{tasktypeid?}/{tag?}', 'BentityController@detail')->name('bentity.detail');
+ Route::resource('bentitype', 'Bentity_typeController');
+ Route::resource('benattrset', 'BentityAttrSetController');
+ Route::resource('benuser', 'BentityUserController');
+ Route::get('tasks/benajaxlist', 'TaskController@bentitleajax');
 
  Route::get('test/{id}', 'TaskController@test');
-Route::get('jd/{sku}','WebcrawlerController@jdsku');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', 'TaskController@index')->name('index.index');
@@ -55,6 +54,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 //    Route::resource('technicalsupports', 'TechnicalsupportController');
     // Route::resource('projects', 'ProjectController');
+    Route::get('import/jd','WebcrawlerController@jdSkuImport')->name('import.jd');
+    Route::post('import/sku2jd','WebcrawlerController@sku2JD')->name('import.sku2jd');
+    Route::post('import/jd2task','WebcrawlerController@jdSku2Task')->name('import.jd2task');
 
     Route::get('tasks/tagcreateajax/{post}/{name}', 'BlogController@createTagAjax')->name('tasks.tagcreate');
     Route::get('tasks/tagremoveajax/{post}/{name}', 'BlogController@removeTagAjax')->name('tasks.tagdelete');

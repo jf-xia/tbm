@@ -31,7 +31,7 @@
 <!-- Assigned To Field -->
 <div class="form-group col-sm-8">
     {!! Form::label('tasktype_name', 'tasktype_name:') !!}
-    {!! Form::select('tasktype_id[]',$taskTypeList,  (!Request::is('tasktypes/create')) ? $tasktype->tasktype_ids : null, ['class' => 'form-control select2-tasktypes','multiple'=>'multiple']) !!}
+    {!! Form::select('tasktype_id[]',$taskTypeList, (!Request::is('tasktypes/create')) ? $tasktype->tasktype_ids : null, ['class' => 'form-control select2-tasktypes','multiple'=>'multiple','id'=>'tasktype_ids']) !!}
 </div>
 <div class="form-group col-sm-4">
     {!! Form::label('assigned_to', 'Assigned To:') !!}

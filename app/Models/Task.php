@@ -32,9 +32,6 @@ class Task extends Model
         'assigned_to',
         'informed',
         'task_id',
-        'product_id',
-        'devsuite_id',
-        'project_id',
         'user_id',
         'taskstatus_id',
         'tasktype_id'
@@ -54,9 +51,6 @@ class Task extends Model
         'assigned_to' => 'integer',
         'informed' => 'string',
         'task_id' => 'integer',
-        'product_id' => 'integer',
-        'devsuite_id' => 'integer',
-        'project_id' => 'integer',
         'user_id' => 'integer',
         'taskstatus_id' => 'integer',
         'tasktype_id' => 'integer'
@@ -86,25 +80,25 @@ class Task extends Model
 //        return $gradetype;
 //    }
 
-    public function getProjectNameAttribute()
-    {
-        $projectName='无项目';
-        if ($this->project) {
-            $projectName = '<a href="'.route('tasks.project', $this->project->id).'" target="_blank" >'.
-                $this->project->customer_name.' ('.$this->project->project_serial.')</a>';
-        }
-        return $projectName;
-    }
-
-    public function getProductNameAttribute()
-    {
-        $productName='无产品';
-        if ($this->product) {
-            $productName = '<a href="'.route('tasks.product', $this->product->id).'" target="_blank" >'.
-                $this->product->prod_name.$this->product->prod_version.' ('.$this->product->prod_sku.')</a>';
-        }
-        return $productName;
-    }
+//    public function getProjectNameAttribute()
+//    {
+//        $projectName='无项目';
+//        if ($this->project) {
+//            $projectName = '<a href="'.route('tasks.project', $this->project->id).'" target="_blank" >'.
+//                $this->project->customer_name.' ('.$this->project->project_serial.')</a>';
+//        }
+//        return $projectName;
+//    }
+//
+//    public function getProductNameAttribute()
+//    {
+//        $productName='无产品';
+//        if ($this->product) {
+//            $productName = '<a href="'.route('tasks.product', $this->product->id).'" target="_blank" >'.
+//                $this->product->prod_name.$this->product->prod_version.' ('.$this->product->prod_sku.')</a>';
+//        }
+//        return $productName;
+//    }
 
     public function getInformedlistAttribute()
     {//User::whereIn('id',$this->getInformedAttribute())->get()->toArray()

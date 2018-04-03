@@ -4,6 +4,12 @@ return [
     //通用翻译
     'id' => '编号',
 
+    //import sku jd
+    'SKU'=>'SKU',
+    'Name' => '名称',
+    'Brand'=>'品牌',
+    'Image'=>'图片',
+
     //upload
     'file_name' => '上传文件名',
     'upload_ids' => '已上传全部编号',

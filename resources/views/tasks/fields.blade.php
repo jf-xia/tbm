@@ -25,31 +25,13 @@
     {!! Form::text('hours', $task->hours, ['class' => 'form-control','required','data-inputmask'=>'"mask": "9.9"']) !!}
 </div>
 
-{{--<!-- // Informed Field 相关邮件提醒功能-->--}}
-<?php /** $informedlist=($task->informedlist);
-
-<div class="form-group col-sm-6">
-    {!! Form::label('informed', 'informed:') !!}
-
-    {!! Form::select('informed[]',$informedlist, $task->informed, ['class' => 'form-control select2-ajax-users','multiple'=>'multiple']) !!}
-</div>
-
-<div class="form-group col-sm-12">
-    {!! Form::label('project_id', 'project_id:') !!}
-    {!! Form::select('project_id',[$task->project_id=>$task->project_name], $task->project_id, ['class' => 'form-control select2-ajax-projects']) !!}
-</div>
-
-{{--找到tasktypes对应的bentity_id集合；循环显示，如下：--}}
-<?php
-// dd($task->tasktype);
-?>
 @if($task->tasktype->bentity_id)
     @foreach(explode('|',$task->tasktype->bentity_id) as $bentity)
         <div class="form-group col-sm-12">
             <?php $ben=(\App\Models\Bentity::find($bentity)); ?>
             @if(!empty($ben))
+                    <?php //dd('dd'); ?>
             <?php
-                //{{--通过当前编辑的task_id，在配置表查找是否有task_id相关数据--}}
                 $bensets=(App\Models\BentitSet::where('task_id', $task->id)->get());
                 if (!empty($bensets)) {
                     $entityArray = [];
@@ -66,25 +48,14 @@
         </div>
     @endforeach
 @endif
-**/
-?>
-
-@section('scripts')
-    <script type="text/javascript">
-        select2(".select2-ajax-users","/tasks/usersajaxlist");
-        select2(".select2-ajax-projects","/tasks/projectsajaxlist");
-        select2(".select2-ajax-products","/tasks/productajax");
-//huayan
-        @foreach(explode('|',$task->tasktype->bentity_id) as $bentity)
-            <?php  $bentask_type=(\App\Models\Bentity::find($bentity)) ?>
-            @if(!empty($bentask_type))
-                select2(".select2-ajax-bentitle{!! $bentask_type->tasktypes_id !!}","/tasks/benajaxlist?bentask_type={!! $bentask_type->tasktypes_id !!}");
-        @endif
-        @endforeach
-    </script>
-@endsection
 
 @include('tasks.eav_fields')
+
+<?php $informedlist=($task->informedlist);?>
+<div class="form-group col-sm-12">
+    {!! Form::label('informed', 'informed:') !!}
+    {!! Form::select('informed[]',$informedlist, $task->informed, ['class' => 'form-control select2-ajax-users','multiple'=>'multiple']) !!}
+</div>
 
 <div class="form-group col-sm-12">
     {!! Form::label('content', 'Content:') !!}
@@ -103,3 +74,14 @@
     <a href="{!! route('tasks.index') !!}" class="btn btn-default"> @lang('view.Cancel')</a>
 </div>
 
+@section('scripts')
+    <script type="text/javascript">
+        select2(".select2-ajax-users","/tasks/usersajaxlist");
+        @foreach(explode('|',$task->tasktype->bentity_id) as $bentity)
+            <?php  $bentask_type=(\App\Models\Bentity::find($bentity)) ?>
+            @if(!empty($bentask_type))
+                select2(".select2-ajax-bentitle{!! $bentask_type->tasktypes_id !!}","/tasks/benajaxlist?bentask_type={!! $bentask_type->tasktypes_id !!}");
+        @endif
+        @endforeach
+    </script>
+@endsection

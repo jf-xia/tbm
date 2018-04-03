@@ -11,7 +11,11 @@ return [
     'If you have any questions, please contact system administrator: Task.system@gtafe.com'=>'如有疑问，请邮件联系系统管理员:Task.system@gtafe.com',
     'Error! Page not found.'=>'错误，页面不存在.',
     'The page you entered was not found!'=>'您输入的页面我们没有找到！',
-    
+
+    //import sku jd
+    'Step'=>'步骤',
+    'Confirmed'=>'确认',
+    'Duplicate'=>'重复，该SKU已导入或输入错误，如需重新导入，请根据该SKU查找并删除旧订单',
 
     //email
     'THIS IS AN AUTOMATIC EMAIL, PLEASE DO NOT REPLY TO THIS MESSAGE.'=>'这是一封自动发送的邮件，您可以登录系统操作，新账号默认密码123456，请及时修改密码，请不要直接回复本邮件',

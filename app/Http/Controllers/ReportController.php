@@ -97,9 +97,9 @@ class ReportController extends AppBaseController
         if (!empty($tasktype)) {
             $tasktype_id = $tasktype->id;
             $sql .= $this->getEavValueSql($tasktype_id, '=tasks.id');
-            $subTasksTypes = DB::select('SELECT tasktype_id FROM tasks WHERE task_id =  (SELECT task_id FROM tasks WHERE tasktype_id='.$tasktype_id.' LIMIT 1) GROUP BY tasktype_id');
+            $subTasksTypes = DB::select('SELECT t2.tasktype_id FROM tasks as t2 WHERE t2.task_id =  (SELECT t3.task_id FROM tasks as t3 WHERE t3.tasktype_id='.$tasktype_id.' LIMIT 1) GROUP BY t2.tasktype_id ');
             foreach ($subTasksTypes as $subTasksType) {
-                $sql .= $this->getEavValueSql($subTasksType->tasktype_id, ' in (SELECT id from tasks where tasks.task_id=tasks.task_id) ');
+                $sql .= $this->getEavValueSql($subTasksType->tasktype_id, ' in (SELECT t3.id from tasks as t3 where t3.task_id=tasks.task_id) ');
             }
             // dd($subTasksTypes);
             // $firstTask = DB::selectOne("SELECT tasktype_id FROM tasks WHERE id = (SELECT task_id FROM tasks WHERE tasktype_id=" . $tasktype . " LIMIT 1)");
@@ -119,7 +119,7 @@ class ReportController extends AppBaseController
         $evSql='';
         if ($taskType) {
             foreach ($this->taskEavRepository->taskTypeEav($taskType) as $att) {
-                $sqlEavValue="(SELECT task_value from tasktype_eav_values WHERE task_type_eav_id=".$att->id." and task_id".$fromTaskId.")";
+                $sqlEavValue="(SELECT task_value from tasktype_eav_values WHERE task_type_eav_id=".$att->id." and task_id".$fromTaskId." limit 1)";
                 $this->taskEavCol[$att->code]=['name'=>$att->code,'data'=>$att->code,'title'=>$att->frontend_label,'searchable'=>false];
                 if ($att->frontend_input=='textarea') {
                     $this->taskEavCol[$att->code]["visible"]=false;

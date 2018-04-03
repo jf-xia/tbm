@@ -19,7 +19,7 @@
 
 .widget .wlabel{
     float: left;
-    width: 60px;
+    width: 85px;
     overflow: hidden;
     clear: left;
     text-align: right;
@@ -33,7 +33,7 @@
 }
 
 .widget .wvalue{
-    margin-left: 70px;
+    margin-left: 95px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

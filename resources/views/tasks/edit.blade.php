@@ -13,9 +13,7 @@
            <div class="box-body">
                <div class="row">
                    {!! Form::model($task, ['route' => ['tasks.update', $task->id], 'method' => 'patch']) !!}
-
                         @include('tasks.fields')
-
                    {!! Form::close() !!}
                </div>
            </div>

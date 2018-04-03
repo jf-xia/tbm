@@ -12,22 +12,6 @@
         <div class="box box-primary">
             <div class="box-body" style="text-align: center">
 
-                <img src="{{  URL::asset('images/intro/intro_1.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_2.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_3.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_4.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_5.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_6.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_7.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_8.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_9.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_10.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_11.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_12.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_13.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_14.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_15.jpg') }}" width="60%"  />
-                <img src="{{  URL::asset('images/intro/intro_16.jpg') }}" width="60%"  />
 
            </div>
         </div>

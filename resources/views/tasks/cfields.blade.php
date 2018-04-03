@@ -56,10 +56,10 @@
 @endif
 
 
-<div class="form-group col-sm-12">
+<!-- div class="form-group col-sm-12">
     {!! Form::label('informed', 'informed:') !!}
     {!! Form::select('informed[]',[], null, ['class' => 'form-control select2-ajax-users','multiple'=>'multiple']) !!}
-</div>
+</div -->
 @section('scripts')
     <script type="text/javascript">
         select2(".select2-ajax-users","/tasks/usersajaxlist");
@@ -81,11 +81,11 @@
             <label for="{{ $attribute->code }}">{{ $attribute->frontend_label }}</label>
         <?php
             $type=$attribute->frontend_input;
-            $select=explode('2',$type); $htmlClass=['class' => 'form-control'];
+            $select=explode('2', $type); $htmlClass=['class' => 'form-control'];
             if ($attribute->is_required==1) {
                 $htmlClass['required']='required';
             }
-            $option=explode('|',$attribute->option);
+            $option=explode('|', $attribute->option);
         ?>
         @if($type=='select')
             {!! Form::select('attribute['.$attribute->id.']',array_combine($option,$option), null, $htmlClass) !!}

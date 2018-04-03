@@ -8,3 +8,4 @@
 <script src="{{ asset('vendor/buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('vendor/buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
+<script src="{{ asset('vendor/datatables/js/jszip.min.js') }}"></script>

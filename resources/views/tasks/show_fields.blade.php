@@ -56,11 +56,11 @@
     <h5 class="wvalue">{!! $task->end_at !!}</h5>
 </div>
 
-<!-- Informed Field -->
+<!-- Informed Field 
 <div class="form-group col-sm-4 widget">
     <h5 class="wlabel"><b>@lang('db.informed')</b></h5>
     <h5 class="wvalue">{!! implode(', ',$task->informedlist) !!}</h5>
-</div>
+</div>-->
 
 
 <?php //huayan
@@ -80,16 +80,16 @@
 
             <?php
             //{{--通过当前编辑的task_id，在配置表查找是否有task_id相关数据--}}
-            $bensets=(App\Models\BentitSet::where('task_id',$task->id)->get());
+            $bensets=(App\Models\BentitSet::where('task_id', $task->id)->get());
 
-            if(!empty($bensets)){
+            if (!empty($bensets)) {
                 $entityArray = [];
-                foreach ($bensets as $benset){
-                    if($benset->bentity->tasktype_id==$ben->tasktypes_id){
+                foreach ($bensets as $benset) {
+                    if ($benset->bentity->tasktype_id==$ben->tasktypes_id) {
                         $entityArray[$benset->ben_title_id]=$benset->bentity->title;
-
                     }
-                }}
+                }
+            }
             /*为什么这里一定要写才可以，否则就死循环*/
             echo("<h5> $ben->name </h5>");
 

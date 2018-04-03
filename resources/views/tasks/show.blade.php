@@ -10,8 +10,8 @@
             @if(\Auth::id()==$task->user_id)
                 @if($task->price)
                 <a href="{!! route('index.post',$task->id) !!}" class="btn btn-warning">@lang('view.View Posts')</a>
-                @endif
                 <a href="{!! route('tasks.share',$task->id) !!}" class="btn btn-success"><i class="glyphicon glyphicon-heart{{ $task->price ? '':'-empty' }}" title="@lang('view.Share')" > </i></a>
+                @endif
                 <a href="{!! route('tasks.edit',$task->id) !!}" class="btn btn-primary">@lang('view.edit')</a>
                 {!! Form::button(trans('view.Delete'), [
                     'type' => 'submit',
@@ -56,10 +56,10 @@
                    <?php  //huayan
                         $bentitles=\DB::select("SELECT bentitset.ben_title_id FROM bentitset INNER JOIN tasks ON bentitset.task_id = tasks.id where tasks.id=$task->id");
                         $benArray=[];
-                        foreach($bentitles as $bentit){
+                        foreach ($bentitles as $bentit) {
                             $benArray[]=$bentit->ben_title_id;
                         }
-                        $bentits=implode('|',$benArray);
+                        $bentits=implode('|', $benArray);
                     ?>
 
                     {!! Form::hidden('bentitle',$bentits)  !!}
@@ -71,7 +71,7 @@
                         @lang('view.Handling/Assistance')
                         {!! Form::select('tasktype_id',$task->tasktype->tasktype_select, null, ['class' => 'form-control','required'=>'required','placeholder'=>trans('view.Select task type'),'style'=>'width: 135px;']) !!}
                         @lang('view.Task'), @lang('view.Task Title:')
-                        {!! Form::textarea('title', $task->first_task->title.'('.$task->user->name.trans('view. Ask Help').')', ['class' => 'form-control','required'=>'required','rows'=>'1','cols'=>'55']) !!}
+                        {!! Form::textarea('title', $task->first_task->title.'(From: '.$task->user->name.')', ['class' => 'form-control','required'=>'required','rows'=>'1','cols'=>'55']) !!}
                         {!! Form::submit(trans('view.Submit'), ['class' => 'btn btn-primary']) !!}
                     </div>
                     @section('scripts')

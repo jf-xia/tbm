@@ -45,7 +45,8 @@ class TaskController extends AppBaseController
     private $bentityRepository; //huayan
     private $bentitsetRepository; //huayan
 
-    public function __construct(TaskRepository $taskRepo,
+    public function __construct(
+        TaskRepository $taskRepo,
                                 TasktypeRepository $tasktypeRepo,
                                 Tasktype_eavRepository $taskEavRepo,
                                 Tasktype_eav_valueRepository $taskEavValueRepo,
@@ -53,8 +54,7 @@ class TaskController extends AppBaseController
                                 TaskgroupRepository $taskgroupRepo,
                                 BentityRepository $bentityRepository,
                                 BentitsetRepository $bentitsetRepository
-                               )
-    {
+                               ) {
         $this->taskRepository = $taskRepo;
         $this->tasktypeRepository = $tasktypeRepo;
         $this->taskstatusRepository = $taskstatusRepo;
@@ -68,14 +68,13 @@ class TaskController extends AppBaseController
     public function test($id, Request $request)
     {
 //        $upload = Excel::load('public/uploads/import/tasks/9_2017-03-07-163627.xlsx');
-        \DB::enableQueryLog();
-        dd(\Auth::getSession()->getId(), \DB::getQueryLog());
-        $test = $this->taskRepository->findWithoutFail($id);
+//        \DB::enableQueryLog();
+//        dd(\Auth::getSession()->getId(), \DB::getQueryLog());
+//        $test = $this->taskRepository->findWithoutFail($id);
 //        $test = $this->tasktypeRepository->getUserTaskTypeList();
 //        $test = $this->taskstatusRepository->findWhere(['user_id'=>0]);
 //        $tags = \DB::select('select id, topic as text from tags WHERE topic LIKE :tagname', ['tagname'=>'%my%']);
-        dd($test->toArray(), \DB::getQueryLog());
-
+//        dd($test->toArray(), \DB::getQueryLog());
     }
 
     /**
@@ -88,7 +87,7 @@ class TaskController extends AppBaseController
     {
         $tasktype=$this->tasktypeRepository->getUserTaskTypeList();
         $selectTaskStatus = $this->taskstatusRepository->selectTaskstatus();
-        return $taskDataTable->render('tasks.index',['tasktype'=>$tasktype,'selectTaskStatus'=>$selectTaskStatus]);
+        return $taskDataTable->render('tasks.index', ['tasktype'=>$tasktype,'selectTaskStatus'=>$selectTaskStatus]);
     }
 
     /**
@@ -98,13 +97,12 @@ class TaskController extends AppBaseController
      */
     public function create($tasktype_id=1)
     {
-
         $atts = $this->taskEavRepository->taskTypeEav($tasktype_id);
         $tasktype = $this->tasktypeRepository->find($tasktype_id);
-//huayan
+        //huayan
         $getBenTaskList=Task::all();
         $selectTaskstatus = $this->taskstatusRepository->selectTaskstatus();
-        return view('tasks.create',compact('atts','tasktype_id','selectTaskstatus','tasktype','getBenTaskList'));
+        return view('tasks.create', compact('atts', 'tasktype_id', 'selectTaskstatus', 'tasktype', 'getBenTaskList'));
     }
 
     /**
@@ -122,50 +120,52 @@ class TaskController extends AppBaseController
         $authUser=\Auth::user();
         $is_assigned=isset($input['assigned_to'])&&isset($input['task_id']);
 
-        if ($is_assigned){
+        if ($is_assigned) {
             $input['user_id']=$input['assigned_to'] ? $input['assigned_to'] : $authUser->id;
             $input['informed'][]=$authUser->id;
             $assignedUser = User::all()->find($input['assigned_to']);
-            if ($assignedUser) { $input['informed'][]=$assignedUser->leader; }
+            if ($assignedUser) {
+                $input['informed'][]=$assignedUser->leader;
+            }
         } else {
             $input['user_id']=$authUser->id;
         }
         $input['informed'][]=$authUser->leader;
         $userIds=$input['informed'];
-        $input['informed']=implode('|',$input['informed']);
+        $input['informed']=implode('|', $input['informed']);
 
 
 
         $task = $this->taskRepository->create($input);
 
-        foreach($userIds as $userId){
+        foreach ($userIds as $userId) {
             $groupId=$this->taskgroupRepository->findWhere(['task_id'=>$task->id,'user_id'=>$userId])->first();
-            if (!$groupId){
+            if (!$groupId) {
                 $this->taskgroupRepository->create(['task_id'=>$task->id,'user_id'=>$userId]);
             }
         }
-//循环写入bentitle
-//huayan
+        //循环写入bentitle
+        //huayan
 //        dd(isset($input['bentitle']));
-        if(isset($input['bentitle'])){
+        if (isset($input['bentitle'])) {
             //判断是否为字符串
-            if(is_string($input['bentitle'])){
-                $bentitle=explode('|',$input['bentitle']);
-               // dd($bentitle);
-            }else{
+            if (is_string($input['bentitle'])) {
+                $bentitle=explode('|', $input['bentitle']);
+            // dd($bentitle);
+            } else {
                 $bentitle=$input['bentitle'];
             }
-            foreach($bentitle as $bentit){
+            foreach ($bentitle as $bentit) {
                 $benId=$this->bentitsetRepository->findWhere(['task_id'=>$task->id,'ben_title_id'=>$bentit])->first();
 
-                if(!$benId){
+                if (!$benId) {
                     $this->bentitsetRepository->create(['task_id'=>$task->id,'ben_title_id'=>$bentit]);
                 }
             }
         }
 
 
-        if (isset($input['attribute'])){
+        if (isset($input['attribute'])) {
             $attributes = $input['attribute'];
             foreach ($attributes as $attKey=>$attValue) {
                 $this->taskEavValueRepository->create(['task_id'=>$task->id,'task_type_eav_id'=>$attKey,'task_value'=>$attValue]);
@@ -173,55 +173,55 @@ class TaskController extends AppBaseController
         }
 
 
-        if ($is_assigned){
+        if ($is_assigned) {
             Flash::success('Task assigned successfully.');
 
             $atts = $this->taskEavRepository;
             $eavValue = $this->taskEavValueRepository;
             $taskId = $task->task_id ? $task->task_id : $task->id;
             $subTask = $this->taskRepository->subTaskInfo($taskId);
-            $taskIds = array_column($subTask->toArray(),'id');
-            $groupComments = $this->taskgroupRepository->findWhereIn('task_id',$taskIds);
+            $taskIds = array_column($subTask->toArray(), 'id');
+            $groupComments = $this->taskgroupRepository->findWhereIn('task_id', $taskIds);
 
-            try{
-                $informed = \Mail::send('emails.task_assigned',['task'=>$task,'atts'=>$atts,'eavValue'=>$eavValue,'subTask'=>$subTask,'groupComments'=>$groupComments],function($message) use ($task) {
-//                    $message->from(env('MAIL_USERNAME').env('MAIL_COM'), env('MAIL_USERNAME'));
-                    $message->to($task->user->email);
-                    $message->bcc('Task.system@gtafe.com');
-                    $message->subject('['.$task->tasktype->name.'任务]'.$task->title);
-                    foreach ($task->informed_email as $cc) {
-                        $message->cc($cc);
-                    }
-                });
-            } catch (Exception $e) {
-//            throw $e;
-//                \Log::warning($e);
-            }
+//             try {
+//                 $informed = \Mail::send('emails.task_assigned', ['task'=>$task,'atts'=>$atts,'eavValue'=>$eavValue,'subTask'=>$subTask,'groupComments'=>$groupComments], function ($message) use ($task) {
+            // //                    $message->from(env('MAIL_USERNAME').env('MAIL_COM'), env('MAIL_USERNAME'));
+//                     $message->to($task->user->email);
+//                     $message->bcc('Task.system@gtafe.com');
+//                     $message->subject('['.$task->tasktype->name.'任务]'.$task->title);
+//                     foreach ($task->informed_email as $cc) {
+//                         $message->cc($cc);
+//                     }
+//                 });
+//             } catch (Exception $e) {
+            // //            throw $e;
+            // //                \Log::warning($e);
+//             }
 
-            return redirect(route('taskgroups.type',1));
+            // return redirect(route('taskgroups.type', 1));
         }
 
-        $this->emailTo($task,'新建');
+        // $this->emailTo($task,'新建');
 
         Flash::success('Task saved successfully.');
-        return redirect(route('tasks.show',$task->id));
+        return redirect(route('tasks.show', $task->id));
     }
 
-    public function emailTo($task,$type='新建'){
-
+    public function emailTo($task, $type='新建')
+    {
         $atts = $this->taskEavRepository;
         $eavValue = $this->taskEavValueRepository;
         $taskId = $task->task_id ? $task->task_id : $task->id;
         $subTask = 0;
         $groupComments = 0;
-        if($type<>'新建'){
+        if ($type<>'新建') {
             $subTask = $this->taskRepository->subTaskInfo($taskId);
-            $taskIds = array_column($subTask->toArray(),'id');
-            $groupComments = $this->taskgroupRepository->findWhereIn('task_id',$taskIds);
+            $taskIds = array_column($subTask->toArray(), 'id');
+            $groupComments = $this->taskgroupRepository->findWhereIn('task_id', $taskIds);
         }
 
-        try{
-            $informed = \Mail::send('emails.task_new',['task'=>$task,'atts'=>$atts,'eavValue'=>$eavValue,'subTask'=>$subTask,'groupComments'=>$groupComments],function($message) use ($task,$type) {
+        try {
+            $informed = \Mail::send('emails.task_new', ['task'=>$task,'atts'=>$atts,'eavValue'=>$eavValue,'subTask'=>$subTask,'groupComments'=>$groupComments], function ($message) use ($task,$type) {
 //                $message->from(env('MAIL_USERNAME').env('MAIL_COM'),env('MAIL_USERNAME'));
                 $message->to($task->user->email);
                 $message->bcc('Task.system@gtafe.com');
@@ -252,19 +252,16 @@ class TaskController extends AppBaseController
             'project_id'=>trans('db.project_id'),
             'content'=>trans('db.content')
         ];
-        return $data = array(array_merge($task,array_column($atts->toArray(),'frontend_label','code')));
+        return $data = array(array_merge($task, array_column($atts->toArray(), 'frontend_label', 'code')));
     }
 
-    public function importExample($tasktype_id){
+    public function importExample($tasktype_id)
+    {
         $data = $this->taskCols($tasktype_id);
-        Excel::create('task'.$tasktype_id.'_'.date('Y-m-d-His'), function($excel) use($data) {
-
-            $excel->sheet('Sheetname', function($sheet) use($data) {
-
+        Excel::create('task'.$tasktype_id.'_'.date('Y-m-d-His'), function ($excel) use ($data) {
+            $excel->sheet('Sheetname', function ($sheet) use ($data) {
                 $sheet->fromArray($data);
-
             });
-
         })->export('xls');
     }
 
@@ -282,8 +279,8 @@ class TaskController extends AppBaseController
     {
         $atts = $this->taskEavRepository->taskTypeEav($tasktype_id);
         $tasktype = $this->tasktypeRepository->find($tasktype_id);
-        $uploads = UploadLog::where('user_id','=',\Auth::id())->get();
-        return view('tasks.import',compact('atts','tasktype_id','tasktype','uploads'));
+        $uploads = UploadLog::where('user_id', '=', \Auth::id())->get();
+        return view('tasks.import', compact('atts', 'tasktype_id', 'tasktype', 'uploads'));
     }
 
     public function checkData(Request $request)
@@ -293,14 +290,14 @@ class TaskController extends AppBaseController
         $fileName=$input['file'];
         $checkCols = $this->taskCols($tasktype_id)[0];
         $uploadCols = array_filter(Excel::load('public/uploads/import/tasks/'.$fileName)->first()->toArray());
-        if($uploadCols == $checkCols && $tasktype_id && $fileName) {//
+        if ($uploadCols == $checkCols && $tasktype_id && $fileName) {//
             $upload = Excel::load('public/uploads/import/tasks/'.$fileName);
             $allData = $upload->limit(5)->toArray();
             $dataHtml = '';
-            foreach($allData as $row) {
-                if($row){
+            foreach ($allData as $row) {
+                if ($row) {
                     $dataHtml .= '<tr>';
-                    foreach($row as $elm) {
+                    foreach ($row as $elm) {
                         $dataHtml .= '<td>'.$elm.'</td>';
                     }
                     $dataHtml .= '</tr>';
@@ -309,8 +306,8 @@ class TaskController extends AppBaseController
             echo '<div style="width:1000px;height:300px;overflow:scroll"><table width="3000" border="1"><caption>'
                 .trans('view.Import').trans('view.Check').'</caption>'.$dataHtml.'</table></div>';
         } else {
-            $diffCol = array_diff_assoc($checkCols,$uploadCols);
-            $errorMessage = $diffCol ? '*提示: '.implode(', ',$diffCol).'字段缺失或错位' : '';
+            $diffCol = array_diff_assoc($checkCols, $uploadCols);
+            $errorMessage = $diffCol ? '*提示: '.implode(', ', $diffCol).'字段缺失或错位' : '';
             echo '数据验证失败，请使用标准模板上传，并阅读第1、2部的上传规范。'.$errorMessage;
         }
     }
@@ -321,31 +318,33 @@ class TaskController extends AppBaseController
 
         if (empty($upload)) {
             Flash::error('Task not found');
-            return redirect(route('tasks.importByTypeId',1));
+            return redirect(route('tasks.importByTypeId', 1));
 //            return ['error'=>'Task not found'];
         }
         $tasktypeId = $upload->tasktype_id;
         \DB::beginTransaction();
-        try{
+        try {
             if ($upload->import_ids) {
-                foreach(explode(',',$upload->import_ids) as $taskId){
+                foreach (explode(',', $upload->import_ids) as $taskId) {
                     $task = $this->taskRepository->findWithoutFail($taskId);
-                    if (!empty($task)) $task->delete();
+                    if (!empty($task)) {
+                        $task->delete();
+                    }
                 }
             }
             $upload->delete();
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             \DB::rollback();
             \Log::error($e);
 
             Flash::error('数据删除产生严重错误，删除数据自动回滚,请手动处理');
-            return redirect(route('tasks.importByTypeId',$tasktypeId));
+            return redirect(route('tasks.importByTypeId', $tasktypeId));
 //            return ['error'=>'数据删除产生严重错误，删除数据自动回滚,请手动处理'];
         }
         \DB::commit();
 
         Flash::success(trans('view.Delete').trans('view.Task').': '.$upload->import_ids);
-        return redirect(route('tasks.importByTypeId',$tasktypeId));
+        return redirect(route('tasks.importByTypeId', $tasktypeId));
 //        return [$id=>trans('view.Delete').trans('view.Task').': '.$upload->import_ids];
     }
 
@@ -358,20 +357,24 @@ class TaskController extends AppBaseController
         $upload_ids = [];
         $import_ids = [];
         $error_ids = [];
-        $upload = UploadLog::where('user_id','=',\Auth::id())->where('file_name','=',$fileName)->first();
-        if (empty($upload)){
+        $upload = UploadLog::where('user_id', '=', \Auth::id())->where('file_name', '=', $fileName)->first();
+        if (empty($upload)) {
             $upload = UploadLog::create(['user_id'=>\Auth::id(),'file_name'=>$fileName,'tasktype_id'=>$tasktype_id]);
             $atts = $this->taskEavRepository->taskTypeEav($tasktype_id);
-            $attsKeys = array_column($atts->toArray(),'code','id');
+            $attsKeys = array_column($atts->toArray(), 'code', 'id');
             \DB::beginTransaction();
-            foreach($uploadData as $row) {
-                if ($row['id']=='编号') continue;
+            foreach ($uploadData as $row) {
+                if ($row['id']=='编号') {
+                    continue;
+                }
                 $upload_ids[]=$row['id'];
-                if(is_numeric($row['id'])){
-                    try{
+                if (is_numeric($row['id'])) {
+                    try {
                         if ($row['product_id']) {
-                            $product = \DB::selectOne("select id from p_product_info where id = :id or prod_sku = :sku",
-                                ['id'=>trim($row['product_id']),'sku'=>trim($row['product_id'])]);
+                            $product = \DB::selectOne(
+                                "select id from p_product_info where id = :id or prod_sku = :sku",
+                                ['id'=>trim($row['product_id']),'sku'=>trim($row['product_id'])]
+                            );
                             $row['product_id'] = $product ? $product->id : 0;
                         }
                         if ($row['project_id']) {
@@ -395,24 +398,25 @@ class TaskController extends AppBaseController
                             'taskstatus_id'=>5
                         ]);
                         foreach ($attsKeys as $eavID=>$key) {
-                            if (isset($row[$key]))
-                            $this->taskEavValueRepository->create(['task_id'=>$task->id,'task_type_eav_id'=>$eavID,'task_value'=>$row[$key]]);
+                            if (isset($row[$key])) {
+                                $this->taskEavValueRepository->create(['task_id'=>$task->id,'task_type_eav_id'=>$eavID,'task_value'=>$row[$key]]);
+                            }
                         }
-                    }catch (Exception $e) {
+                    } catch (Exception $e) {
                         \DB::rollback();
 //                        \Log::error($e);
                         return '编号为'.$row['id'].'的数据产生严重错误，无法导入，如无法判断问题原因，建议删除该行，再执行导入操作';
                     }
                     $import_ids[] = $task->id;
-                }else{
+                } else {
                     $error_ids[]=$row['id'];
                 }
             }
             \DB::commit();
             $result = [
-                'upload_ids'=>implode(',',$upload_ids),
-                'import_ids'=>implode(',',$import_ids),
-                'error_ids'=>implode(',',$error_ids)
+                'upload_ids'=>implode(',', $upload_ids),
+                'import_ids'=>implode(',', $import_ids),
+                'error_ids'=>implode(',', $error_ids)
             ];
             $upload->update($result);
         } else {
@@ -445,10 +449,10 @@ class TaskController extends AppBaseController
         $eavValue = $this->taskEavValueRepository;
         $taskId = $task->task_id ? $task->task_id : $task->id;
         $subTask = $this->taskRepository->subTaskInfo($taskId);
-        $taskIds = array_column($subTask->toArray(),'id');
-        $groupComments = $this->taskgroupRepository->findWhereIn('task_id',$taskIds);
+        $taskIds = array_column($subTask->toArray(), 'id');
+        $groupComments = $this->taskgroupRepository->findWhereIn('task_id', $taskIds);
 
-        return view('tasks.show',compact('task','atts','eavValue','subTask','groupComments'));
+        return view('tasks.show', compact('task', 'atts', 'eavValue', 'subTask', 'groupComments'));
     }
 
     /**
@@ -476,10 +480,10 @@ class TaskController extends AppBaseController
         $taskId = $task->task_id ? $task->task_id : $task->id;
         $subTask = $this->taskRepository->subTaskInfo($taskId);
 
-        $taskIds = array_column($subTask->toArray(),'id');
-        $groupComments = $this->taskgroupRepository->findWhereIn('task_id',$taskIds);
+        $taskIds = array_column($subTask->toArray(), 'id');
+        $groupComments = $this->taskgroupRepository->findWhereIn('task_id', $taskIds);
 
-        return view('tasks.edit',compact('task','atts1','eavValue1','selectTaskstatus','atts','eavValue','subTask','groupComments'));
+        return view('tasks.edit', compact('task', 'atts1', 'eavValue1', 'selectTaskstatus', 'atts', 'eavValue', 'subTask', 'groupComments'));
     }
 
     /**
@@ -501,37 +505,35 @@ class TaskController extends AppBaseController
             return redirect(route('tasks.index'));
         }
 
-        if (isset($input['informed'])){
-            foreach($input['informed'] as $userId){
+        if (isset($input['informed'])) {
+            foreach ($input['informed'] as $userId) {
                 $groupId=$this->taskgroupRepository->findWhere(['task_id'=>$id,'user_id'=>$userId])->first();
 //                dd($groupId);
-                if (!$groupId){
+                if (!$groupId) {
                     $this->taskgroupRepository->create(['task_id'=>$id,'user_id'=>$userId]);
                 }
             }
-            $input['informed']=implode('|',$input['informed']);
+            $input['informed']=implode('|', $input['informed']);
         }
-//huayan
-            if(isset($input['bentitle'])){
-
-                BentitSet::where('task_id','=',$task->id)->delete();
-                foreach($input['bentitle'] as $bentit){
-                    $benId=$this->bentitsetRepository->findWhere(['task_id'=>$task->id,'ben_title_id'=>$bentit])->first();
-                    if(!$benId){
-                     $this->bentitsetRepository->create(['task_id'=>$task->id,'ben_title_id'=>$bentit]);
-                    }
-
+        //huayan
+        if (isset($input['bentitle'])) {
+            BentitSet::where('task_id', '=', $task->id)->delete();
+            foreach ($input['bentitle'] as $bentit) {
+                $benId=$this->bentitsetRepository->findWhere(['task_id'=>$task->id,'ben_title_id'=>$bentit])->first();
+                if (!$benId) {
+                    $this->bentitsetRepository->create(['task_id'=>$task->id,'ben_title_id'=>$bentit]);
                 }
             }
+        }
         $task = $this->taskRepository->update($input, $id);
 
-        if (isset($input['attribute'])){
+        if (isset($input['attribute'])) {
             $attributes = $input['attribute'];
             foreach ($attributes as $attKey=>$attValue) {
                 $attId=$this->taskEavValueRepository->findWhere(['task_id'=>$id,'task_type_eav_id'=>$attKey])->first();
-                if ($attId){
-                    $this->taskEavValueRepository->update(['task_id'=>$id,'task_type_eav_id'=>$attKey,'task_value'=>$attValue],$attId->id);
-                }else{
+                if ($attId) {
+                    $this->taskEavValueRepository->update(['task_id'=>$id,'task_type_eav_id'=>$attKey,'task_value'=>$attValue], $attId->id);
+                } else {
                     $this->taskEavValueRepository->create(['task_id'=>$id,'task_type_eav_id'=>$attKey,'task_value'=>$attValue]);
                 }
             }
@@ -543,7 +545,7 @@ class TaskController extends AppBaseController
 
         Flash::success('Task updated successfully.');
 
-        return redirect(route('tasks.show',$task->id));
+        return redirect(route('tasks.show', $task->id));
     }
 
     /**
@@ -584,8 +586,8 @@ class TaskController extends AppBaseController
  from p_product_info where prod_sku LIKE :prod_sku or `prod_name` LIKE :prod_name ORDER BY id DESC LIMIT 20", ['prod_sku'=>$term,'prod_name'=>$term]);
         return \Response::json($userlist);
     }
-//huayan
-//业务库类型
+    //huayan
+    //业务库类型
     public function bentitleajax(Request $request)
     {
         $input = $request->all();
@@ -597,18 +599,20 @@ class TaskController extends AppBaseController
 
     public function calendar()
     {
-        $myTeams = \Auth::user()->getTeams(\Auth::id(),[\Auth::id()=>\Auth::user()->name]);
+        $myTeams = \Auth::user()->getTeams(\Auth::id(), [\Auth::id()=>\Auth::user()->name]);
         $tasktype = $this->tasktypeRepository->getUserTaskTypeList();
-        $planToTasks = \DB::select($this->getTasksSql().' WHERE (hours = 0 or taskstatus_id <> 5) and deleted_at is NULL and user_id=:user_id order by end_at ASC',
-            ['user_id'=>\Auth::id()]);
+        $planToTasks = \DB::select(
+            $this->getTasksSql().' WHERE (hours = 0 or taskstatus_id <> 5) and deleted_at is NULL and user_id=:user_id order by end_at ASC',
+            ['user_id'=>\Auth::id()]
+        );
 //        dd($tasks);
-        return view('tasks.calendar',compact('myTeams','tasktype','planToTasks'));
+        return view('tasks.calendar', compact('myTeams', 'tasktype', 'planToTasks'));
     }
 
     public function createAjax(Request $request)
     {
         $input = $request->all();
-        if (!isset($input['title'])){
+        if (!isset($input['title'])) {
             return 'Title cannot be empty!';
         }
         $user = \Auth::user();
@@ -651,7 +655,7 @@ class TaskController extends AppBaseController
         if (empty($task) || $task->user_id<>\Auth::id()) {
             return 'Task not found';
         }
-        $task = $this->taskRepository->update($input,$input['id']);
+        $task = $this->taskRepository->update($input, $input['id']);
 
         return 'OK';
     }
@@ -669,7 +673,7 @@ class TaskController extends AppBaseController
 
         Flash::success('Task updated successfully.');
 
-        return redirect(route('tasks.show',$id));
+        return redirect(route('tasks.show', $id));
     }
 
     public function listAjax(Request $request)
@@ -698,7 +702,7 @@ class TaskController extends AppBaseController
         $eavValue = $this->taskEavValueRepository;
         //$subTask = $this->taskRepository->subTaskInfo($task->task_id);
         $taskgroup = $this->taskgroupRepository->findWhere(['task_id'=>$id,'user_id'=>\Auth::id()])->first();
-        return view('tasks.ajax_show',compact('task','atts','eavValue','taskgroup'));
+        return view('tasks.ajax_show', compact('task', 'atts', 'eavValue', 'taskgroup'));
     }
 
 

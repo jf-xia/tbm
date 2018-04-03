@@ -14,44 +14,47 @@
 Auth::routes();
 
 //Route::get('/dd', function () { return redirect()->back()->getTargetUrl();});
-Route::any('wechat', 'WechatController@server')->name('wechat.server');
-Route::any('wechat/users', 'WechatController@users')->name('wechat.users');
-Route::any('wechat/materials', 'WechatController@materials')->name('wechat.materials');
+// Route::any('wechat', 'WechatController@server')->name('wechat.server');
+// Route::any('wechat/users', 'WechatController@users')->name('wechat.users');
+// Route::any('wechat/materials', 'WechatController@materials')->name('wechat.materials');
 
-Route::get('/', 'BlogController@index')->name('index.index');
-Route::get('/help',  function () { return view('intro.index');})->name('intro.index');
+// Route::get('/', 'BlogController@index')->name('index.index');
+Route::get('/help', function () {
+    return view('intro.index');
+})->name('intro.index');
 
-Route::get('sort/{sort}', 'BlogController@index')->name('index.sort');
-Route::get('sort/{sort}/{tag}', 'BlogController@index')->name('index.tag');
-Route::get('sort/{sort}/{tag}/{search}', 'BlogController@index')->name('index.search');
+// Route::get('sort/{sort}', 'BlogController@index')->name('index.sort');
+// Route::get('sort/{sort}/{tag}', 'BlogController@index')->name('index.tag');
+// Route::get('sort/{sort}/{tag}/{search}', 'BlogController@index')->name('index.search');
 Route::get('/{id}', 'BlogController@userinfo')->name('index.user')->where('id', '[0-9]+');
-Route::get('post/{id}', 'BlogController@post')->name('index.post')->where('id', '[0-9]+');
+// Route::get('post/{id}', 'BlogController@post')->name('index.post')->where('id', '[0-9]+');
 
 Route::get('tasks/listajax', 'TaskController@listAjax')->name('tasks.listajax');
-Route::get('habitsajax/{user_id}', 'BlogController@habitsAjax');//->name('resumse.habitsajax');
-Route::any('update_info', 'BlogController@update_info')->name('resumse.update_info');
+// Route::get('habitsajax/{user_id}', 'BlogController@habitsAjax');//->name('resumse.habitsajax');
+// Route::any('update_info', 'BlogController@update_info')->name('resumse.update_info');
 //Route::any('/upload', 'UploadController@serve')->name('upload.serve');
 
 //huayan
-Route::resource('bentity','BentityController');
-Route::get('bentity/lists/{id}/{benname?}/{search?}','BentityController@lists')->name('bentity.lists');
-Route::get('bentity/typedetail/{tasktype_id}/{bentit_id}/{benname}/{tag?}','BentityController@typedetail')->name('bentity.typedetail');
-Route::get('bentity/detail/{id}/{benname?}/{tasktitle?}/{tasktypeid?}/{tag?}','BentityController@detail')->name('bentity.detail');
-Route::resource('bentitype','Bentity_typeController');
-Route::resource('benattrset','BentityAttrSetController');
-Route::resource('benuser','BentityUserController');
-Route::get('tasks/benajaxlist', 'TaskController@bentitleajax');
+// Route::resource('bentity', 'BentityController');
+// Route::get('bentity/lists/{id}/{benname?}/{search?}', 'BentityController@lists')->name('bentity.lists');
+// Route::get('bentity/typedetail/{tasktype_id}/{bentit_id}/{benname}/{tag?}', 'BentityController@typedetail')->name('bentity.typedetail');
+// Route::get('bentity/detail/{id}/{benname?}/{tasktitle?}/{tasktypeid?}/{tag?}', 'BentityController@detail')->name('bentity.detail');
+// Route::resource('bentitype', 'Bentity_typeController');
+// Route::resource('benattrset', 'BentityAttrSetController');
+// Route::resource('benuser', 'BentityUserController');
+// Route::get('tasks/benajaxlist', 'TaskController@bentitleajax');
 
-Route::get('test/{id}', 'TaskController@test');
-
+ Route::get('test/{id}', 'TaskController@test');
+Route::get('jd/{sku}','WebcrawlerController@jdsku');
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/home', 'TaskController@calendar');
+    Route::get('/', 'TaskController@index')->name('index.index');
+    Route::get('/home', 'TaskController@index');
     Route::get('/calendar', 'TaskController@calendar')->name('tasks.calendar');
     Route::any('laravel-u-editor-server/server', 'UeditorController@server')->name('ueditor.server');
 
 //    Route::resource('technicalsupports', 'TechnicalsupportController');
-    Route::resource('projects', 'ProjectController');
+    // Route::resource('projects', 'ProjectController');
 
     Route::get('tasks/tagcreateajax/{post}/{name}', 'BlogController@createTagAjax')->name('tasks.tagcreate');
     Route::get('tasks/tagremoveajax/{post}/{name}', 'BlogController@removeTagAjax')->name('tasks.tagdelete');
@@ -96,7 +99,7 @@ Route::group(['middleware' => ['auth']], function () {
     //Route::resource('taskcomments', 'TaskcommentController');
     Route::get('tasktypeEavs/create/{tasktype_id}', 'Tasktype_eavController@create')->name('tasktypeEavs.createByTypeId');
     Route::resource('tasktypeEavs', 'Tasktype_eavController');
-//  Route::resource('tasktypeeavvalues', 'Tasktype_eav_valueController');
+    //  Route::resource('tasktypeeavvalues', 'Tasktype_eav_valueController');
 
     Route::get('reports/chart', 'ReportController@chart')->name('reports.chart');
     Route::get('reports/task/{tasktype}', 'ReportController@task')->name('reports.task');

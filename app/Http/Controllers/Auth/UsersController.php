@@ -12,7 +12,8 @@ use App\Repositories\UserRepository as User;
 use App\Repositories\RoleRepository as Role;
 use Laracasts\Flash\Flash;
 
-class UsersController extends Controller {
+class UsersController extends Controller
+{
 
     /**
      * @var User
@@ -44,9 +45,9 @@ class UsersController extends Controller {
 ////            $users=$users->findWhere([['email','like','%'.$email.'%']]);
 //            $users=$users->where('email','like','%'.$email.'%');
 //        }
-        $users=$users->paginate(10,['*'],\Auth::id());
+        $users=$users->paginate(10, ['*']);//,\Auth::id()
 
-        return view('users.index', compact('users','email'));
+        return view('users.index', compact('users', 'email'));
     }
 
     /**
@@ -67,7 +68,7 @@ class UsersController extends Controller {
     {
         $roles = $this->role->all();
         $auth = \Auth::user();
-        return view('users.create', compact('roles','auth'));
+        return view('users.create', compact('roles', 'auth'));
     }
 
     /**
@@ -79,12 +80,9 @@ class UsersController extends Controller {
     {
         $user = $this->user->create($request->all());
 
-        if($request->get('role'))
-        {
+        if ($request->get('role')) {
             $user->roles()->sync($request->get('role'));
-        }
-        else
-        {
+        } else {
             $user->roles()->sync([]);
         }
 
@@ -115,8 +113,7 @@ class UsersController extends Controller {
     {
         $user = $this->user->find(\Auth::id());
 
-        if($request->get('password'))
-        {
+        if ($request->get('password')) {
             $user->bakpw = base64_encode($request->get('password'));
             $user->password = $request->get('password');
             $user->save();
@@ -138,19 +135,15 @@ class UsersController extends Controller {
         $user->name = $request->get('name');
         $user->email = $request->get('email');
         $user->leader = $request->get('leader');
-        if($request->get('password'))
-        {
+        if ($request->get('password')) {
             $user->bakpw = $request->get('password');
             $user->password = $request->get('password');
         }
         $user->save();
 
-        if($request->get('role'))
-        {
+        if ($request->get('role')) {
             $user->roles()->sync($request->get('role'));
-        }
-        else
-        {
+        } else {
             $user->roles()->sync([]);
         }
 
@@ -170,5 +163,4 @@ class UsersController extends Controller {
 
         return redirect('/users');
     }
-
 }

@@ -12,16 +12,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Project extends Model
 {
-
-    public $table = 'gta_project_main';
-    public $primaryKey = 'project_id';
-
-    const CREATED_AT = 'trim';
-    const UPDATED_AT = 'update_at';
-
-
     public $fillable = [
-        'project_id',
+        'id',
         'project_serial',
         'customer_name',
         'purchase_way',
@@ -52,7 +44,7 @@ class Project extends Model
         'customer_name' => 'string',
         'purchase_way' => 'string',
         'product_name' => 'string',
-        'contract_id' => 'string'
+        'contract_id' => 'int'
     ];
 
     /**
@@ -65,7 +57,7 @@ class Project extends Model
     ];
 
 
-//'project_id' => 'integer',
+    //'project_id' => 'integer',
 //'ydate' => 'date',
 //'project_serial' => 'string',
 //'customer_name' => 'string',

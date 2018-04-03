@@ -89,8 +89,8 @@ class Task extends Model
     public function getProjectNameAttribute()
     {
         $projectName='无项目';
-        if ($this->project){
-            $projectName = '<a href="'.route('tasks.project',$this->project->project_id).'" target="_blank" >'.
+        if ($this->project) {
+            $projectName = '<a href="'.route('tasks.project', $this->project->id).'" target="_blank" >'.
                 $this->project->customer_name.' ('.$this->project->project_serial.')</a>';
         }
         return $projectName;
@@ -99,8 +99,8 @@ class Task extends Model
     public function getProductNameAttribute()
     {
         $productName='无产品';
-        if ($this->product){
-            $productName = '<a href="'.route('tasks.product',$this->product->id).'" target="_blank" >'.
+        if ($this->product) {
+            $productName = '<a href="'.route('tasks.product', $this->product->id).'" target="_blank" >'.
                 $this->product->prod_name.$this->product->prod_version.' ('.$this->product->prod_sku.')</a>';
         }
         return $productName;
@@ -111,7 +111,7 @@ class Task extends Model
         if (!$this->getInformedAttribute()) {
             return [];
         }
-        $informedlist=array_column(\DB::select('select id,name from users where id in ('.implode(',',$this->getInformedAttribute()).')'),'name','id');
+        $informedlist=array_column(\DB::select('select id,name from users where id in ('.implode(',', $this->getInformedAttribute()).')'), 'name', 'id');
         return $informedlist;
     }
 
@@ -120,21 +120,21 @@ class Task extends Model
         if (!$this->getInformedAttribute()) {
             return [];
         }
-        $informedlist=array_column(\DB::select('select id,email from users where id in ('.implode(',',$this->getInformedAttribute()).')'),'email','id');
+        $informedlist=array_column(\DB::select('select id,email from users where id in ('.implode(',', $this->getInformedAttribute()).')'), 'email', 'id');
         return $informedlist;
     }
 
     public function getTaskOwnersNameAttribute()
     {
-        $informedlist=array_column(\DB::select('select id,name from users where id in (select user_id FROM tasks WHERE (task_id = '.$this->id.' or id ='.$this->id.') and deleted_at is null)'),'name','id');
+        $informedlist=array_column(\DB::select('select id,name from users where id in (select user_id FROM tasks WHERE (task_id = '.$this->id.' or id ='.$this->id.') and deleted_at is null)'), 'name', 'id');
         return $informedlist;
     }
 
     public function getTaskOwnersEmailAttribute()
     {
         $informedlist=[];
-        if ($this->task_id){
-            $informedlist=array_column(\DB::select('select id,email from users where id in (select user_id FROM tasks WHERE (task_id = \''.$this->task_id.'\' or id =\''.$this->task_id.'\') and deleted_at is null)'),'email','id');
+        if ($this->task_id) {
+            $informedlist=array_column(\DB::select('select id,email from users where id in (select user_id FROM tasks WHERE (task_id = \''.$this->task_id.'\' or id =\''.$this->task_id.'\') and deleted_at is null)'), 'email', 'id');
         }
         return $informedlist;
     }
@@ -149,7 +149,7 @@ class Task extends Model
     public function getTaskIsAssignedAttribute()
     {
         $taskIsAssigned = 1;
-        if ($this->task_id && !$this->tasktype->multi_assigned){
+        if ($this->task_id && !$this->tasktype->multi_assigned) {
 //            $taskId = $this->task_id ? $this->task_id : 0;
             $taskIsAssigned=(\DB::selectOne('SELECT max(id) as maxtaskcreate FROM tasks WHERE task_id = '.$this->task_id.' and deleted_at is null')->maxtaskcreate)==$this->id;
         } elseif (!$this->task_id) {
@@ -160,7 +160,7 @@ class Task extends Model
 
     public function getInformedAttribute()
     {
-        return array_column($this->taskgroup->toArray(),'user_id','id');
+        return array_column($this->taskgroup->toArray(), 'user_id', 'id');
     }
 
     public function getTasktypeNameAttribute()
@@ -186,16 +186,16 @@ class Task extends Model
      **/
     public function project()
     {
-        return $this->belongsTo(\App\Models\Project::class, 'project_id', 'project_id');
+        return $this->belongsTo(\App\Models\Project::class, 'project_id', 'id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function product()
-    {
-        return $this->belongsTo(\App\Models\ProductMain::class, 'product_id', 'id');
-    }
+    // public function product()
+    // {
+    //     return $this->belongsTo(\App\Models\ProductMain::class, 'product_id', 'id');
+    // }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

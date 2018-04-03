@@ -24,6 +24,8 @@
                 select2(".select2-ajax-{{ $select[1] }}", "/tasks/{{ $select[1] }}ajaxlist");
             </script>
         @endsection
+    @elseif($attribute->frontend_label=='SKU')
+        <input class="form-control" name="attribute[{{ $attribute->id }}]" type="text" required >
     @else
         {!! Form::$type('attribute['.$attribute->id.']', $eavValue1[$attribute->id], $htmlClass) !!}
     @endif

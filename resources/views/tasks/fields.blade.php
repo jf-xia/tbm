@@ -26,18 +26,12 @@
 </div>
 
 {{--<!-- // Informed Field 相关邮件提醒功能-->--}}
-<?php $informedlist=($task->informedlist);
+<?php /** $informedlist=($task->informedlist);
 
-?>
 <div class="form-group col-sm-6">
     {!! Form::label('informed', 'informed:') !!}
 
     {!! Form::select('informed[]',$informedlist, $task->informed, ['class' => 'form-control select2-ajax-users','multiple'=>'multiple']) !!}
-</div>
-
-<div class="form-group col-sm-6 optionally">
-    {!! Form::label('product_id', 'product_id:') !!}
-    {!! Form::select('product_id',[$task->product_id=>$task->product_name], $task->product_id, ['class' => 'form-control select2-ajax-products']) !!}
 </div>
 
 <div class="form-group col-sm-12">
@@ -45,24 +39,22 @@
     {!! Form::select('project_id',[$task->project_id=>$task->project_name], $task->project_id, ['class' => 'form-control select2-ajax-projects']) !!}
 </div>
 
-<?php //huayan
-    $tasktype=\App\Models\Tasktype::find($task->tasktype_id);
-?>
-
 {{--找到tasktypes对应的bentity_id集合；循环显示，如下：--}}
-
-@if($tasktype->bentity_id)
-    @foreach(explode('|',$tasktype->bentity_id) as $bentity)
+<?php
+// dd($task->tasktype);
+?>
+@if($task->tasktype->bentity_id)
+    @foreach(explode('|',$task->tasktype->bentity_id) as $bentity)
         <div class="form-group col-sm-12">
             <?php $ben=(\App\Models\Bentity::find($bentity)); ?>
             @if(!empty($ben))
             <?php
                 //{{--通过当前编辑的task_id，在配置表查找是否有task_id相关数据--}}
-                $bensets=(App\Models\BentitSet::where('task_id',$task->id)->get());
-                if(!empty($bensets)){
+                $bensets=(App\Models\BentitSet::where('task_id', $task->id)->get());
+                if (!empty($bensets)) {
                     $entityArray = [];
-                    foreach ($bensets as $benset){
-                        if($benset->bentity->tasktype_id==$ben->tasktypes_id){
+                    foreach ($bensets as $benset) {
+                        if ($benset->bentity->tasktype_id==$ben->tasktypes_id) {
                             $entityArray[$benset->ben_title_id]=$benset->bentity->title;
                         }
                     }
@@ -74,7 +66,8 @@
         </div>
     @endforeach
 @endif
-
+**/
+?>
 
 @section('scripts')
     <script type="text/javascript">
@@ -82,7 +75,7 @@
         select2(".select2-ajax-projects","/tasks/projectsajaxlist");
         select2(".select2-ajax-products","/tasks/productajax");
 //huayan
-        @foreach(explode('|',$tasktype->bentity_id) as $bentity)
+        @foreach(explode('|',$task->tasktype->bentity_id) as $bentity)
             <?php  $bentask_type=(\App\Models\Bentity::find($bentity)) ?>
             @if(!empty($bentask_type))
                 select2(".select2-ajax-bentitle{!! $bentask_type->tasktypes_id !!}","/tasks/benajaxlist?bentask_type={!! $bentask_type->tasktypes_id !!}");

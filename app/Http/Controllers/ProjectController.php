@@ -40,7 +40,7 @@ class ProjectController extends AppBaseController
     {
         $input = $request->all();
         $term='%'.$input['term'].'%';//, concat(start_at,plan_at,finish_at) as descr
-        $userlist = \DB::select("select project_id as id,concat(customer_name,' (',project_serial,')') as text, CONCAT('状态:<b>',project_status,'</b>; 立项日期:',sale_apply_at,'; 结项日期:',finish_at,'; 产品:',product_name,'; 销售:',principal,'; 实施部:',dep_group,'; 类型:',project_type,'; 项目经理:',project_manager) as descr from gta_project_main where customer_name LIKE :customer_name or `project_serial` LIKE :project_serial ORDER BY project_id DESC LIMIT 20", ['customer_name'=>$term,'project_serial'=>$term]);
+        $userlist = \DB::select("select id,concat(customer_name,' (',project_serial,')') as text, CONCAT('状态:<b>',project_status,'</b>; 立项日期:',sale_apply_at,'; 结项日期:',finish_at,'; 产品:',product_name,'; 销售:',principal,'; 实施部:',dep_group,'; 类型:',project_type,'; 项目经理:',project_manager) as descr from gta_project_main where customer_name LIKE :customer_name or `project_serial` LIKE :project_serial ORDER BY id DESC LIMIT 20", ['customer_name'=>$term,'project_serial'=>$term]);
         return \Response::json($userlist);
     }
 

@@ -125,6 +125,8 @@ class ReportController extends AppBaseController
                 $this->taskEavCol[$att->code]=['name'=>$att->code,'data'=>$att->code,'title'=>$att->frontend_label,'searchable'=>false];
                 if ($att->frontend_input=='textarea') {
                     $this->taskEavCol[$att->code]["visible"]=false;
+                } elseif ($att->frontend_input=='image') {
+                    $this->taskEavCol[$att->code]=['name'=>$att->code,'data'=>$att->code,'title'=>$att->frontend_label,'searchable'=>false,'render' => '"<img src=\""+data+"\" height=\"150\"/>"','exportable'=>true];
                 } elseif ($att->frontend_input=='select2users') {
                     $sqlEavValue= '(SELECT users.name FROM users WHERE users.id='.$sqlEavValue.')';
                 }

@@ -42,7 +42,6 @@
 @endif
 
 @if($tasktype->bentity_id)
-<div class="form-group col-sm-12"><button onclick="javascript:$('.optionally').each(function(){ $(this).show(); });$(this).hide();" type="button" class="btn btn-default btn-block" > @lang('view.Display optionally form') <span class="caret"></span></button></div>
 {{--循环显示bentity库名称//huayan--}}
 @foreach(explode('|',$tasktype->bentity_id) as $bentity)
     <div class="form-group col-sm-12">

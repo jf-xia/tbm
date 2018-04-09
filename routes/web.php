@@ -44,8 +44,10 @@ Route::get('tasks/listajax', 'TaskController@listAjax')->name('tasks.listajax');
  Route::resource('benuser', 'BentityUserController');
  Route::get('tasks/benajaxlist', 'TaskController@bentitleajax');
 
- Route::get('test/{id}', 'TaskController@test');
+Route::get('test/{id}', 'TaskController@test');
 
+Route::any('tsets/task/{tasktype}', 'TasksetController@task')->name('tsets.task');
+//Route::post('tsets/task/{tasktype}', 'TasksetController@task');
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', 'TaskController@index')->name('index.index');
     Route::get('/home', 'TaskController@index');

@@ -30,6 +30,7 @@ class Tasktype_eav extends Model
         'is_required',
         'is_unique',
         'is_report',
+        'not_list',
         'option',
         'user_id',
         'orderby',
@@ -50,6 +51,7 @@ class Tasktype_eav extends Model
         'is_required' => 'integer',
         'is_unique' => 'integer',
         'is_report' => 'integer',
+        'not_list' => 'integer',
         'option' => 'string',
         'orderby' => 'integer',
         'user_id' => 'integer',
@@ -78,6 +80,6 @@ class Tasktype_eav extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
+        return $this->belongsTo(\App\User::class, 'user_id', 'id');
     }
 }

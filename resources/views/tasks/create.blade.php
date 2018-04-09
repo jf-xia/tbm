@@ -1,6 +1,4 @@
 @extends('layouts.app')
-<!-- //huayan -->
-{{--<script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>--}}
 @section('content')
     <section class="content-header">
         <h1>

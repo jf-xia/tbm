@@ -53,16 +53,13 @@ class TasksetDataTable extends DataTable
             ->addAction(['width' => '10%'])
             ->ajax(["dataType" => 'json', 'url'=>'','method'=>'post'])//
             ->parameters();
-//        ['buttons' => [
-//                [
-//                    'extend'=> 'collection',
-//                    'text' => trans('view.Action'),
-//                    'buttons' => [
-//
-//                    ],
-//                ]]]
     }
 
+
+    public function myCustomAction()
+    {
+        return "function (e, dt, node, config ) {alert( 'Button activated' );}";
+    }
     /**
      * Get columns.
      *

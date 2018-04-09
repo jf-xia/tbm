@@ -114,6 +114,7 @@ class TaskController extends AppBaseController
      */
     public function store(CreateTaskRequest $request)
     {
+        //todo 抽象task保存方法
         $input = $request->all();
 //        dd($input);
 
@@ -134,9 +135,10 @@ class TaskController extends AppBaseController
         $userIds=$input['informed'];
         $input['informed']=implode('|', $input['informed']);
 
-
-
         $task = $this->taskRepository->create($input);
+        if (!$task->task_id){
+            $this->taskRepository->update(['task_id'=>$task->id],$task->id);
+        }
 
         foreach ($userIds as $userId) {
             $groupId=$this->taskgroupRepository->findWhere(['task_id'=>$task->id,'user_id'=>$userId])->first();
@@ -248,8 +250,8 @@ class TaskController extends AppBaseController
             'hours'=>trans('db.hours'),
             'created_at'=>trans('db.created_at'),
             'end_at'=>trans('db.end_at'),
-            'product_id'=>trans('db.product_id'),
-            'project_id'=>trans('db.project_id'),
+//            'product_id'=>trans('db.product_id'),
+//            'project_id'=>trans('db.project_id'),
             'content'=>trans('db.content')
         ];
         return $data = array(array_merge($task, array_column($atts->toArray(), 'frontend_label', 'code')));
@@ -370,18 +372,18 @@ class TaskController extends AppBaseController
                 $upload_ids[]=$row['id'];
                 if (is_numeric($row['id'])) {
                     try {
-                        if ($row['product_id']) {
-                            $product = \DB::selectOne(
-                                "select id from p_product_info where id = :id or prod_sku = :sku",
-                                ['id'=>trim($row['product_id']),'sku'=>trim($row['product_id'])]
-                            );
-                            $row['product_id'] = $product ? $product->id : 0;
-                        }
-                        if ($row['project_id']) {
-                            $project = \DB::selectOne("select project_id as id from gta_project_main where project_id = :id or project_serial = :sku", [
-                                'id'=>trim($row['project_id']),'sku'=>trim($row['project_id'])]);
-                            $row['project_id'] = $project ? $project->id : 0;
-                        }
+//                        if ($row['product_id']) {
+//                            $product = \DB::selectOne(
+//                                "select id from p_product_info where id = :id or prod_sku = :sku",
+//                                ['id'=>trim($row['product_id']),'sku'=>trim($row['product_id'])]
+//                            );
+//                            $row['product_id'] = $product ? $product->id : 0;
+//                        }
+//                        if ($row['project_id']) {
+//                            $project = \DB::selectOne("select project_id as id from gta_project_main where project_id = :id or project_serial = :sku", [
+//                                'id'=>trim($row['project_id']),'sku'=>trim($row['project_id'])]);
+//                            $row['project_id'] = $project ? $project->id : 0;
+//                        }
                         $row['hours'] = $row['hours'] ? $row['hours'] : 0.5;
                         $row['created_at'] = $row['created_at'] ? $row['created_at'] : date('Y-m-d H:i:s');
 //                        \Log::debug($row);
@@ -390,8 +392,8 @@ class TaskController extends AppBaseController
                             'hours'=>$row['hours'],
                             'created_at'=>$row['created_at'],
                             'end_at'=>$row['end_at'],
-                            'product_id'=>$row['product_id'],
-                            'project_id'=>$row['project_id'],
+//                            'product_id'=>$row['product_id'],
+//                            'project_id'=>$row['project_id'],
                             'content'=>$row['content'],
                             'user_id'=>\Auth::id(),
                             'tasktype_id'=>$tasktype_id,
@@ -525,6 +527,10 @@ class TaskController extends AppBaseController
                 }
             }
         }
+
+        if ($task->task_id==0){
+            $input['task_id']=$task->id;
+        }
         $task = $this->taskRepository->update($input, $id);
 
         if (isset($input['attribute'])) {
@@ -575,6 +581,17 @@ class TaskController extends AppBaseController
         return redirect(route('tasks.index'));
     }
 
+    public function deleteSelected($ids)
+    {
+        try {
+            foreach (explode(',',$ids) as $id) {
+                $this->taskRepository->delete($id);
+            }
+            return '删除成功！';
+        } catch (Exception $e) {
+            return '删除失败！';
+        }
+    }
     /**
      * @return \Illuminate\View\ajax
      */

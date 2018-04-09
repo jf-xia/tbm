@@ -50,9 +50,6 @@
                     {!! Form::open(['route' => 'tasks.store','class'=>'form-inline']) !!}
                     {!! Form::hidden('task_id', $task->task_id?$task->task_id:$task->id) !!}
                     {!! Form::hidden('taskstatus_id', 1) !!}
-                    {!! Form::hidden('product_id', $task->product_id) !!}
-                    {!! Form::hidden('devsuite_id', $task->devsuite_id) !!}
-                    {!! Form::hidden('project_id', $task->project_id) !!}
                    <?php  //huayan
                         $bentitles=\DB::select("SELECT bentitset.ben_title_id FROM bentitset INNER JOIN tasks ON bentitset.task_id = tasks.id where tasks.id=$task->id");
                         $benArray=[];
@@ -63,7 +60,6 @@
                     ?>
 
                     {!! Form::hidden('bentitle',$bentits)  !!}
-                    {!! Form::hidden('project_id', $task->project_id) !!}
                     <?php $assigned_to = $task->tasktype->assigned_to;?>
                     <div class="callout callout-info col-sm-12">
                         @lang('view.Ask')

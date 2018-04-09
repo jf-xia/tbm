@@ -33,6 +33,40 @@
         }
     };
 
+    DataTable.ext.buttons.assignTo = {
+        className: 'buttons-assignTo',
+
+        text: function (dt) {
+            return '<i class="fa fa-send"></i> ' + dt.i18n('buttons.assignTo', 'Assign To');
+        },
+
+        action: function (e, dt, button, config) {
+            $('.assign_to').removeClass('hidden');
+        }
+    };
+
+    DataTable.ext.buttons.delete = {
+        className: 'buttons-delete',
+
+        text: function (dt) {
+            return '<i class="fa fa-trash"></i> ' + dt.i18n('buttons.delete', 'Delete');
+        },
+
+        action: function (e, dt, button, config) {
+            //alert($('#selected_row').val());
+            $.ajax({
+                    url: '/tasks/deleteselected/'+$('#selected_row').val(), type: 'GET',
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(errorThrown);
+                },
+                success: function(doc) {
+                    dt.draw(false);
+                    alert(doc);
+                }
+            });
+        }
+    };
+
     //DataTable.ext.buttons.excel = {
     //    className: 'buttons-excel',
     //

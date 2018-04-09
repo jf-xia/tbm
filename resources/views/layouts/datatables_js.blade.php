@@ -9,4 +9,3 @@
 <script src="{{ asset('vendor/buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
 <script src="{{ asset('vendor/datatables/js/jszip.min.js') }}"></script>
-<script src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>

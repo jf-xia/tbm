@@ -76,8 +76,9 @@ class TasksetController extends AppBaseController
         if (!empty($tasktype)) {
             $sql .= $this->getEavValueSql($tasktype->id, '=tasks.id');
             $firstTask = DB::selectOne("SELECT tasktype_id FROM tasks WHERE id = (SELECT task_id FROM tasks WHERE tasktype_id=" . $tasktype->id . " LIMIT 1)");
-//            dd($firstTask->tasktype_id,$tasktype->id,"SELECT tasktype_id FROM tasks WHERE id = (SELECT task_id FROM tasks WHERE tasktype_id=" . $tasktype->id . " LIMIT 1)");
-            $sql .= $firstTask ? $this->getEavValueSql($firstTask->tasktype_id, '=tasks.task_id') : '';
+//            dd($firstTask,$tasktype->id,"SELECT tasktype_id FROM tasks WHERE id = (SELECT task_id FROM tasks WHERE tasktype_id=" . $tasktype->id . " LIMIT 1)");
+            $isRootTask = !empty($firstTask) ? $firstTask->tasktype_id : 0;
+            $sql .= $tasktype->id<>$isRootTask ? $this->getEavValueSql($isRootTask, '=tasks.task_id') : '';
         }
 
         $sql.="(SELECT users.name FROM users WHERE users.id=tasks.user_id) as 'user_name',(SELECT taskstatuses.name FROM taskstatuses WHERE taskstatuses.id=tasks.taskstatus_id) as 'taskstatus_id',tasks.hours,tasks.price,DATE_FORMAT(tasks.created_at,'%Y-%m-%d') as created_at,DATE_FORMAT(tasks.updated_at,'%Y-%m-%d') as updated_at,tasks.end_at,tasks.id,tasks.task_id,tasks.user_id,tasks.content";

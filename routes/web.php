@@ -86,6 +86,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('tasks/upload/checkData', 'TaskController@checkData')->name('tasks.checkimport');
     Route::get('tasks/upload/submitimportdata', 'TaskController@submitImportData')->name('tasks.submitimport');
     Route::get('tasks/deleteimportdata/{id}', 'TaskController@deleteImportData')->name('tasks.deleteimport');
+    Route::get('tasks/deleteselected/{ids}', 'TaskController@deleteSelected')->name('tasks.deleteSelected');
 
     Route::get('tasks/delete/{id}', 'TaskController@destroy')->name('tasks.destroyById');
     Route::resource('tasks', 'TaskController');

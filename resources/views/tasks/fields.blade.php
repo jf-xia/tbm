@@ -25,37 +25,7 @@
     {!! Form::text('hours', $task->hours, ['class' => 'form-control','required','data-inputmask'=>'"mask": "9.9"']) !!}
 </div>
 
-@if($task->tasktype->bentity_id)
-    @foreach(explode('|',$task->tasktype->bentity_id) as $bentity)
-        <div class="form-group col-sm-12">
-            <?php $ben=(\App\Models\Bentity::find($bentity)); ?>
-            @if(!empty($ben))
-                    <?php //dd('dd'); ?>
-            <?php
-                $bensets=(App\Models\BentitSet::where('task_id', $task->id)->get());
-                if (!empty($bensets)) {
-                    $entityArray = [];
-                    foreach ($bensets as $benset) {
-                        if ($benset->bentity->tasktype_id==$ben->tasktypes_id) {
-                            $entityArray[$benset->ben_title_id]=$benset->bentity->title;
-                        }
-                    }
-                }
-                echo("<label> $ben->name </label>");
-            ?>
-               {!! Form::select('bentitle[]',$entityArray, null, ['class' => 'form-control select2-ajax-bentitle'.$ben->tasktypes_id,]) !!}
-            @endif
-        </div>
-    @endforeach
-@endif
-
 @include('tasks.eav_fields')
-
-<?php $informedlist=($task->informedlist);?>
-<div class="form-group col-sm-12">
-    {!! Form::label('informed', 'informed:') !!}
-    {!! Form::select('informed[]',$informedlist, $task->informed, ['class' => 'form-control select2-ajax-users','multiple'=>'multiple']) !!}
-</div>
 
 <div class="form-group col-sm-12">
     {!! Form::label('content', 'Content:') !!}
@@ -77,11 +47,5 @@
 @section('scripts')
     <script type="text/javascript">
         select2(".select2-ajax-users","/tasks/usersajaxlist");
-        @foreach(explode('|',$task->tasktype->bentity_id) as $bentity)
-            <?php  $bentask_type=(\App\Models\Bentity::find($bentity)) ?>
-            @if(!empty($bentask_type))
-                select2(".select2-ajax-bentitle{!! $bentask_type->tasktypes_id !!}","/tasks/benajaxlist?bentask_type={!! $bentask_type->tasktypes_id !!}");
-        @endif
-        @endforeach
     </script>
 @endsection

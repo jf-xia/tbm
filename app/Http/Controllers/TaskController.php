@@ -67,6 +67,7 @@ class TaskController extends AppBaseController
 
     public function test($id, Request $request)
     {
+        dd(bcrypt('xiajie'));
 //        $upload = Excel::load('public/uploads/import/tasks/9_2017-03-07-163627.xlsx');
 //        \DB::enableQueryLog();
 //        dd(\Auth::getSession()->getId(), \DB::getQueryLog());
@@ -123,49 +124,15 @@ class TaskController extends AppBaseController
 
         if ($is_assigned) {
             $input['user_id']=$input['assigned_to'] ? $input['assigned_to'] : $authUser->id;
-            $input['informed'][]=$authUser->id;
             $assignedUser = User::all()->find($input['assigned_to']);
-            if ($assignedUser) {
-                $input['informed'][]=$assignedUser->leader;
-            }
         } else {
             $input['user_id']=$authUser->id;
         }
-        $input['informed'][]=$authUser->leader;
-        $userIds=$input['informed'];
-        $input['informed']=implode('|', $input['informed']);
 
         $task = $this->taskRepository->create($input);
         if (!$task->task_id){
             $this->taskRepository->update(['task_id'=>$task->id],$task->id);
         }
-
-        foreach ($userIds as $userId) {
-            $groupId=$this->taskgroupRepository->findWhere(['task_id'=>$task->id,'user_id'=>$userId])->first();
-            if (!$groupId) {
-                $this->taskgroupRepository->create(['task_id'=>$task->id,'user_id'=>$userId]);
-            }
-        }
-        //循环写入bentitle
-        //huayan
-//        dd(isset($input['bentitle']));
-        if (isset($input['bentitle'])) {
-            //判断是否为字符串
-            if (is_string($input['bentitle'])) {
-                $bentitle=explode('|', $input['bentitle']);
-            // dd($bentitle);
-            } else {
-                $bentitle=$input['bentitle'];
-            }
-            foreach ($bentitle as $bentit) {
-                $benId=$this->bentitsetRepository->findWhere(['task_id'=>$task->id,'ben_title_id'=>$bentit])->first();
-
-                if (!$benId) {
-                    $this->bentitsetRepository->create(['task_id'=>$task->id,'ben_title_id'=>$bentit]);
-                }
-            }
-        }
-
 
         if (isset($input['attribute'])) {
             $attributes = $input['attribute'];

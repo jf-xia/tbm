@@ -97,7 +97,7 @@ return [
 
     //layout
     'Home'=>'首页',
-    'TBM'=>'3D建模生产管理系统',
+    'TBM'=>'3D建模生产管理系统.v0',
     'You have'=>'你有',
     'Team have'=>'团队有',
     'notifications'=>'提醒',

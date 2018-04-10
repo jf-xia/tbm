@@ -50,16 +50,6 @@
                     {!! Form::open(['route' => 'tasks.store','class'=>'form-inline']) !!}
                     {!! Form::hidden('task_id', $task->task_id?$task->task_id:$task->id) !!}
                     {!! Form::hidden('taskstatus_id', 1) !!}
-                   <?php  //huayan
-                        $bentitles=\DB::select("SELECT bentitset.ben_title_id FROM bentitset INNER JOIN tasks ON bentitset.task_id = tasks.id where tasks.id=$task->id");
-                        $benArray=[];
-                        foreach ($bentitles as $bentit) {
-                            $benArray[]=$bentit->ben_title_id;
-                        }
-                        $bentits=implode('|', $benArray);
-                    ?>
-
-                    {!! Form::hidden('bentitle',$bentits)  !!}
                     <?php $assigned_to = $task->tasktype->assigned_to;?>
                     <div class="callout callout-info col-sm-12">
                         @lang('view.Ask')

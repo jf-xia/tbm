@@ -27,51 +27,9 @@
 
 </div>
 
-@if($tasktype->project_required)
-    <div class="form-group col-sm-12">
-        {!! Form::label('project_id', 'project_id:') !!}
-        {!! Form::select('project_id',[], null, ['class' => 'form-control select2-ajax-projects','required']) !!}
-    </div>
-@endif
-
-@if($tasktype->product_required)
-    <div class="form-group col-sm-12">
-        {!! Form::label('product_id', 'product_id:') !!}
-        {!! Form::select('product_id',[], null, ['class' => 'form-control select2-ajax-products','required']) !!}
-    </div>
-@endif
-
-@if($tasktype->bentity_id)
-{{--循环显示bentity库名称//huayan--}}
-@foreach(explode('|',$tasktype->bentity_id) as $bentity)
-    <div class="form-group col-sm-12">
-        <?php  $bentask_type=(\App\Models\Bentity::find($bentity)) ?>
-        @if(!empty($bentask_type))
-        <label>{{ $bentask_type->name }}</label>
-        {!! Form::select('bentitle[]',[], null, ['class' => 'form-control select2-ajax-bentitle'.$bentask_type->tasktypes_id,]) !!}
-        @endif
-    </div>
-@endforeach
-@endif
-
-
-<!-- div class="form-group col-sm-12">
-    {!! Form::label('informed', 'informed:') !!}
-    {!! Form::select('informed[]',[], null, ['class' => 'form-control select2-ajax-users','multiple'=>'multiple']) !!}
-</div -->
 @section('scripts')
     <script type="text/javascript">
         select2(".select2-ajax-users","/tasks/usersajaxlist");
-        select2(".select2-ajax-projects","/tasks/projectsajaxlist");
-        select2(".select2-ajax-products","/tasks/productajax");
-//huayan
-        @foreach(explode('|',$tasktype->bentity_id) as $bentity)
-            <?php  $bentask_type=(\App\Models\Bentity::find($bentity)) ?>
-            @if(!empty($bentask_type))
-                select2(".select2-ajax-bentitle{!! $bentask_type->tasktypes_id !!}","/tasks/benajaxlist?bentask_type={!! $bentask_type->tasktypes_id !!}");
-           @endif
-        @endforeach
-
     </script>
 @endsection
 
